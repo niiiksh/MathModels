@@ -1,0 +1,199 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MathModels.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
+    xmlns:inkTools="using:Microsoft.Labs.InkToolbarControl"
+    x:Class="MathModels.View.SelectedModel"
+    mc:Ignorable="d">
+
+    <!--<Page.Resources>
+        <Style TargetType="HubSection" x:Key="MyHubSectionStyle">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding}" Foreground="{ThemeResource SystemAccentColor}" />
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>-->
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Hub x:Name="HubModels" Header="tempModelName" Background="Black" Foreground="White">
+            <HubSection x:Name="HubSectionInput" Header="Input data" IsHeaderInteractive="False" Background="Black" MinWidth="250" RequestedTheme="Dark">
+                <DataTemplate>
+                    <!-- Content -->
+                </DataTemplate>
+            </HubSection>
+            <HubSection x:Name="HubSectionResults" Header="Results" IsHeaderInteractive="False" Background="#222222" MinWidth="250" RequestedTheme="Dark">
+                <DataTemplate>
+                    <!-- Content -->
+                </DataTemplate>
+            </HubSection>
+            <HubSection x:Name="HubSectionGraph" Header="Chart" IsHeaderInteractive="False" Background="#5D8AA8" MinWidth="500" RequestedTheme="Dark" HorizontalAlignment="Stretch">
+                <DataTemplate>
+                    <!-- Content -->
+                </DataTemplate>
+            </HubSection>
+        </Hub>
+        <TextBox x:Name="tbLambda" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,126,0,0" Width="231" InputScope="Number" Header="Enter λ" Foreground="White" RequestedTheme="Dark" PlaceholderText="0&lt;λ/μ≤1"/>
+        <TextBox x:Name="tbMu" HorizontalAlignment="Left" Margin="10,191,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" InputScope="Number" Header="Enter μ" RequestedTheme="Dark" PlaceholderText="0&lt;λ/μ≤1"/>
+        <TextBox x:Name="tbV" HorizontalAlignment="Left" Margin="10,256,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" InputScope="Number" Header="Enter V" RequestedTheme="Dark"/>
+        <TextBox x:Name="tbN" HorizontalAlignment="Left" Margin="10,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" InputScope="Number" Header="Enter N" RequestedTheme="Dark"/>
+        <Button x:Name="bResult" Content="CALC" HorizontalAlignment="Left" Margin="26,405,0,0" VerticalAlignment="Top" RequestedTheme="Dark" Width="199" Background="#FFFD7313" FontSize="18.667" FontWeight="SemiBold" Click="bResult_Click" Opacity="0.9"/>
+        <TextBlock x:Name="tbError" HorizontalAlignment="Left" Margin="26,462,0,0" TextWrapping="Wrap" Text="tempErrorText" VerticalAlignment="Top" Foreground="Red" FontSize="21.333" TextAlignment="Center" MaxLines="3" MaxWidth="245" LineHeight="14.667"/>
+        <ListView x:Name="listViewResults" HorizontalAlignment="Left" Height="364" Margin="264,126,0,0" VerticalAlignment="Top" Width="236" SelectionMode="Extended" Foreground="White" Padding="1,1,0,0" RequestedTheme="Dark">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontSize="24" FontFamily="Consolas" Text="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="140" Margin="264,490,0,0" VerticalAlignment="Top" Width="236" RequestedTheme="Dark">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontSize="14" FontFamily="Consolas" Text="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Charting:Chart x:Name="LineChart" HorizontalAlignment="Left" Margin="531,119,0,0" VerticalAlignment="Top" Height="293" Width="438">
+            <Charting:Chart.Series>
+                <Charting:AreaSeries x:Name="chartSeries1" Margin="0" IndependentValuePath="x_axis" DependentValuePath="y_axis" IsSelectionEnabled="True" AnimationSequence="LastToFirst"/>
+                <Charting:AreaSeries x:Name="chartSeries2" Margin="0" IndependentValuePath="x_axis" DependentValuePath="y_axis" IsSelectionEnabled="True" AnimationSequence="LastToFirst"/>
+            </Charting:Chart.Series>
+            <Charting:Chart.Palette>
+                <Charting:ResourceDictionaryCollection>
+                    <!-- Blue -->
+                    <ResourceDictionary>
+                        <SolidColorBrush
+             x:Key="Background"
+             Color="#FFFD7313" />
+                        <Style
+             x:Key="DataPointStyle"
+             TargetType="Control">
+                            <Setter
+                 Property="Background"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                        <Style
+             x:Key="DataShapeStyle"
+             TargetType="Shape">
+                            <Setter
+                 Property="Stroke"
+                 Value="{StaticResource Background}" />
+                            <Setter
+                 Property="StrokeThickness"
+                 Value="2" />
+                            <Setter
+                 Property="StrokeMiterLimit"
+                 Value="1" />
+                            <Setter
+                 Property="Fill"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                    </ResourceDictionary>
+                    <!-- Red -->
+                    <ResourceDictionary>
+                        <SolidColorBrush
+             x:Key="Background"
+             Color="#FFDC443F" />
+                        <Style
+             x:Key="DataPointStyle"
+             TargetType="Control">
+                            <Setter
+                 Property="Background"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                        <Style
+             x:Key="DataShapeStyle"
+             TargetType="Shape">
+                            <Setter
+                 Property="Stroke"
+                 Value="{StaticResource Background}" />
+                            <Setter
+                 Property="StrokeThickness"
+                 Value="2" />
+                            <Setter
+                 Property="StrokeMiterLimit"
+                 Value="1" />
+                            <Setter
+                 Property="Fill"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                    </ResourceDictionary>
+                    <!-- Yellow -->
+                    <ResourceDictionary>
+                        <SolidColorBrush
+             x:Key="Background"
+             Color="#FFD6DC3B" />
+                        <Style
+             x:Key="DataPointStyle"
+             TargetType="Control">
+                            <Setter
+                 Property="Background"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                        <Style
+             x:Key="DataShapeStyle"
+             TargetType="Shape">
+                            <Setter
+                 Property="Stroke"
+                 Value="{StaticResource Background}" />
+                            <Setter
+                 Property="StrokeThickness"
+                 Value="2" />
+                            <Setter
+                 Property="StrokeMiterLimit"
+                 Value="1" />
+                            <Setter
+                 Property="Fill"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                    </ResourceDictionary>
+                    <!-- Green -->
+                    <ResourceDictionary>
+                        <SolidColorBrush
+             x:Key="Background"
+             Color="#FFAAD34F" />
+                        <Style
+             x:Key="DataPointStyle"
+             TargetType="Control">
+                            <Setter
+                 Property="Background"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                        <Style
+             x:Key="DataShapeStyle"
+             TargetType="Shape">
+                            <Setter
+                 Property="Stroke"
+                 Value="{StaticResource Background}" />
+                            <Setter
+                 Property="StrokeThickness"
+                 Value="2" />
+                            <Setter
+                 Property="StrokeMiterLimit"
+                 Value="1" />
+                            <Setter
+                 Property="Fill"
+                 Value="{StaticResource Background}" />
+                        </Style>
+                    </ResourceDictionary>
+                </Charting:ResourceDictionaryCollection>
+            </Charting:Chart.Palette>
+        </Charting:Chart>
+        <ProgressRing x:Name="ProgressRing" HorizontalAlignment="Left" Margin="85,500,0,0" VerticalAlignment="Top" Height="70" RenderTransformOrigin="0.5,0.5" Width="70" Foreground="#FFFD7313">
+            <ProgressRing.RenderTransform>
+                <CompositeTransform ScaleY="-1" ScaleX="-1" Rotation="225"/>
+            </ProgressRing.RenderTransform>
+        </ProgressRing>
+        <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" Height="448" Margin="530,118,0,0" VerticalAlignment="Top" Width="441"/>
+        <inkTools:InkToolbar x:Name="inkToolbar" TargetInkCanvas="{x:Bind inkCanvas}" VerticalAlignment="Top" HorizontalAlignment="Left" PenColor="Orange" Margin="868,61,0,0"></inkTools:InkToolbar>
+        <ToggleSwitch Toggled="ToggleSwitch_Toggled" x:Name="toggleSwitch"  OnContent="On" OffContent="Off" Header="Inking on the chart" HorizontalAlignment="Left" Margin="26,448,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+    </Grid>
+</Page>

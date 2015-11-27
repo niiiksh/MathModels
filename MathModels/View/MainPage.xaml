@@ -1,0 +1,22 @@
+﻿<Page
+    x:Class="MathModels.View.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MathModels.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <!--{ThemeResource SystemAccentColor}-->
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="imageMain" HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="1024" Source="/Assets/MainPage.jpg" Canvas.ZIndex="-1" Stretch="Fill"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="294,83,0,0" TextWrapping="Wrap" Text="Queueing Theory Calculator" VerticalAlignment="Top" Foreground="#E5FD7313" Opacity="0.9" FontSize="32" FontFamily="Segoe UI Semibold" MaxLines="3" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="False" IsRightTapEnabled="False" Canvas.ZIndex="5"/>
+        <Button x:Name="bModel1" Content="M|M|1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,157,0,0" Width="181" Click="bModel1_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
+        <Button x:Name="bModel2" Content="M|M|∞" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,210,0,0" Width="181" Click="bModel2_Click" Foreground="Black" Background="#FFFD7313" Opacity="0.9"/>
+        <Button x:Name="bModel3" Content="M|M|V" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,263,0,0" Width="181" Click="bModel3_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
+        <Button x:Name="bModel4" Content="M|M|V|K" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,316,0,0" Width="181" Click="bModel4_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
+        <Button x:Name="bModel5" Content="M|M|V|K|N" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,369,0,0" Width="181" Click="bModel5_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
+    </Grid>
+</Page>
