@@ -7,8 +7,8 @@
     <ProjectGuid>{D9AFC7C2-1919-43B8-B727-03198025434C}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MathModels.VoiceCommands</RootNamespace>
-    <AssemblyName>VoiceCommandService</AssemblyName>
+    <RootNamespace>MathModels.Cortana</RootNamespace>
+    <AssemblyName>CortanaService</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
@@ -97,7 +97,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MathModelsVoiceCommandService.cs" />
+    <Compile Include="CortanaCommandService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

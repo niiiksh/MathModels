@@ -16,14 +16,12 @@ using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.VoiceCommands;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace MathModels.VoiceCommands
+namespace MathModels.Cortana
 {
-    public sealed class MathModelsVoiceCommandService : XamlRenderingBackgroundTask
+    public sealed class CortanaService : XamlRenderingBackgroundTask
     {
         private BackgroundTaskDeferral serviceDeferral;
         VoiceCommandServiceConnection voiceServiceConnection;
-
-        //TODOAdaptiveUISample.Repositories.ITodoItemRepository _todoItemRepository;
 
         //MathModels.View.SelectedModel selectedModel;
 

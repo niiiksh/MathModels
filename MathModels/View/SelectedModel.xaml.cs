@@ -41,6 +41,7 @@ namespace MathModels.View
             drawingAttributes.Size = new Size(penSize, penSize);
             drawingAttributes.IgnorePressure = false;
             drawingAttributes.FitToCurve = true;
+            inkToolbar.PenSize = new Size(penSize, penSize);
 
             inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
             inkCanvas.InkPresenter.InputDeviceTypes = Windows.UI.Core.CoreInputDeviceTypes.Mouse | Windows.UI.Core.CoreInputDeviceTypes.Pen;

@@ -181,7 +181,7 @@ namespace MathModels
                 navigationCommand = new ViewModel.QueueVoiceCommand(
                                         "protocolLaunch",
                                         "text",
-                                        "model",
+                                        "Show me a graph for model one in queueing calculator",
                                         modelnumber);
 
                 navigationToPageType = typeof(View.SelectedModel);
