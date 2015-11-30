@@ -14,12 +14,12 @@
 
         /// <summary>
         /// Set up the voice command struct with the provided details about the voice command.
-        /// Oriented around the "showTripToDestination" VCD command (See AdventureWorksCommands.xml)
+        /// Oriented around the "showGraph" VCD command (See vcd.xml)
         /// </summary>
         /// <param name="voiceCommand">The voice command (the Command element in the VCD xml) </param>
         /// <param name="commandMode">The command mode (whether it was voice or text activation)</param>
         /// <param name="textSpoken">The raw voice command text.</param>
-        /// <param name="modelNumber">The destination parameter.</param>
+        /// <param name="modelNumber">The model number parameter.</param>
         public QueueVoiceCommand(string voiceCommand, string commandMode, string textSpoken, string modelNumber)
         {
             this.voiceCommand = voiceCommand;

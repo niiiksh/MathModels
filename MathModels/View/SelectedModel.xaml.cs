@@ -122,6 +122,7 @@ namespace MathModels.View
                     string[] args = arguments.Split('=');
                     if (args.Length == 2 && args[0].ToLowerInvariant() == "modelnumber")
                     {
+                        HubModels.Header = GetModelByNumber(args[1]);
                         SetControlsPosition(args[1]);
                         SetRandomInput();
                         bResult_Click(this, new RoutedEventArgs());

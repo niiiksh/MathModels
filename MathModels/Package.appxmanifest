@@ -24,16 +24,11 @@
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#fe9000" />
-        <uap:InitialRotationPreference>
-          <uap:Rotation Preference="landscape" />
-          <uap:Rotation Preference="landscapeFlipped" />
-        </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.appService" EntryPoint="MathModels.CortanaCommands.CortanaService">
-          <uap:AppService Name ="CortanaServiceEndpoint"/>
+        <uap:Extension Category="windows.appService" EntryPoint="CortanaCommandService.CortanaCommandService">
+          <uap:AppService Name="MathModelsCortanaCommandService"/>
         </uap:Extension>
-        <!--<uap:Extension Category="windows.personalAssistantLaunch"/>-->
       </Extensions>
     </Application>
   </Applications>

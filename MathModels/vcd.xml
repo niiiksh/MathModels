@@ -5,7 +5,7 @@
     <Example>Show me a graph for the model 1 in Queueing Calculator</Example>
 
     <Command Name="showGraph">
-      <Example> Show me the random graph for queueing theory model 1</Example>
+      <Example> Show me the graph for queueing theory model 1</Example>
       <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] [random] graph for [the] model {modelnumber} [in]</ListenFor>
       <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
@@ -17,15 +17,17 @@
       <Navigate/>
     </Command>
     
-    <Command Name="graphWithParams">
-      <Example>Show me a graph with parameters for queueing theory model 3</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] show [me] [a] graph with parameters for [the] model {modelnumber} [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified" >Show [me] [a] graph with parameters for [the] {builtin:AppName} model {modelnumber}</ListenFor>
+    <Command Name="graphParams">
+      <Example>What is the graph with parameters for the second queueing theory model</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] what is [a] graph with parameters for [the] model {modelnumber} [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] graph with parameters for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] show [me] [a] graph with parameters for [the] {modelnumber} model [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified" >Show [me] [a] graph with parameters for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] what is [a] [the] graph with parameters for [the] {modelnumber} model [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] [the] graph with parameters for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+
+      <ListenFor RequireAppName="ExplicitlySpecified"> What is [a] [the] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
       <Feedback> I'm on it</Feedback>
-      <VoiceCommandService Target="CortanaServiceEndpoint"/>
+      <VoiceCommandService Target="MathModelsCortanaCommandService"/>
     </Command>
 
     <PhraseList Label="modelnumber"> 
