@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="6b255d71-c41f-42f9-a777-636de6eb558a" Publisher="CN=Nikita" Version="3.0.2.0" />
+  <Identity Name="6b255d71-c41f-42f9-a777-636de6eb558a" Publisher="CN=Nikita" Version="1.1.5.0" />
   <mp:PhoneIdentity PhoneProductId="6b255d71-c41f-42f9-a777-636de6eb558a" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>QueueingTheoryCalculator</DisplayName>
@@ -27,7 +27,7 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.appService" EntryPoint="CortanaCommandService.CortanaCommandService">
-          <uap:AppService Name="MathModelsCortanaCommandService"/>
+          <uap:AppService Name="MathModelsCortanaCommandService" />
         </uap:Extension>
       </Extensions>
     </Application>

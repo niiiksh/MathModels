@@ -59,7 +59,7 @@ namespace CortanaCommandService
                                 }
                                 if (confirmed)
                                 {
-                                    userMessage.DisplayMessage = userMessage.SpokenMessage = "Done and Done! Here are your graph.";
+                                    userMessage.DisplayMessage = userMessage.SpokenMessage = "Done and Done! Here is your graph.";
                                     
                                     response = VoiceCommandResponse.CreateResponse(userMessage);
                                     await voiceServiceConnection.ReportSuccessAsync(response);
@@ -112,7 +112,7 @@ namespace CortanaCommandService
             // can tap to launch the app. 
             // Pass in a launch to enable the app to deep link to a page 
             // relevant to the voice command.
-            response.AppLaunchArgument = string.Format("modelname={0}", modelnumber);
+            response.AppLaunchArgument = string.Format("modelnumber={0}", modelnumber);
 
             // Ask Cortana to display the user message and content tile and 
             // also speak the user message.

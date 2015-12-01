@@ -66,7 +66,7 @@ namespace MathModels
                 else
                 {
                     // Launching with arguments. We assume, for now, that this is likely
-                    // to be in the form of "destination=<location>" from activation via Cortana.
+                    // to be in the form of "modelnumber=<number>" from activation via Cortana.
                     rootFrame.Navigate(typeof(View.SelectedModel), e.Arguments);
                 }
             }
@@ -181,7 +181,7 @@ namespace MathModels
                 navigationCommand = new ViewModel.QueueVoiceCommand(
                                         "protocolLaunch",
                                         "text",
-                                        "Show me a graph for model one in queueing calculator",
+                                        "modelnumber",
                                         modelnumber);
 
                 navigationToPageType = typeof(View.SelectedModel);
