@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathModels", "MathModels\MathModels.csproj", "{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6C1FA11-9695-4721-BFA7-B227FAACD105} = {E6C1FA11-9695-4721-BFA7-B227FAACD105}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CortanaCommandService", "CortanaCommandService\CortanaCommandService.csproj", "{E6C1FA11-9695-4721-BFA7-B227FAACD105}"
 EndProject

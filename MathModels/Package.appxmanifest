@@ -27,8 +27,9 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.appService" EntryPoint="CortanaCommandService.CortanaCommandService">
-          <uap:AppService Name="MathModelsCortanaCommandService" />
+          <uap:AppService Name="CortanaCommands" />
         </uap:Extension>
+        <uap:Extension Category="windows.personalAssistantLaunch"/>
       </Extensions>
     </Application>
   </Applications>

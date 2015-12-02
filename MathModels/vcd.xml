@@ -1,33 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
   <CommandSet xml:lang="en-us" Name="CommandSet_en-us">
-    <AppName>Queueing Calculator</AppName>
-    <Example>Show me a graph for the model 1 in Queueing Calculator</Example>
+    <AppName>Queueing Theory</AppName>
+    <Example>What is a graph for the second queueing theory model</Example>
 
     <Command Name="showGraph">
-      <Example> Show me the graph for queueing theory model 1</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] [random] graph for [the] model {modelnumber} [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
+      <Example> Show me the random graph for queueing theory model three</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] random graph for [the] model {modelnumber} [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] random graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] model {modelnumber} in {builtin:AppName}</ListenFor>
-      
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] [random] graph for [the] {modelnumber} model [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] random graph for [the] {modelnumber} model [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] random graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
       <Feedback>Drawing graph for model {modelnumber}</Feedback>
       <Navigate/>
     </Command>
     
     <Command Name="graphParams">
-      <Example>What is the graph with parameters for the second queueing theory model</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] what is [a] graph with parameters for [the] model {modelnumber} [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] graph with parameters for [the] {builtin:AppName} model {modelnumber}</ListenFor>
+      <Example>What is a graph for the second queueing theory model</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" > what is [a] [the] graph for [the] model {modelnumber} [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] [the] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >[model] what is [a] [the] graph with parameters for [the] {modelnumber} model [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] [the] graph with parameters for [the] {modelnumber} {builtin:AppName} model</ListenFor>
-
-      <ListenFor RequireAppName="ExplicitlySpecified"> What is [a] [the] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" > what is [a] [the] graph for [the] {modelnumber} model [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified" >What is [a] [the] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
       <Feedback> I'm on it</Feedback>
-      <VoiceCommandService Target="MathModelsCortanaCommandService"/>
+      <VoiceCommandService Target="CortanaCommands"/>
     </Command>
 
     <PhraseList Label="modelnumber"> 
@@ -41,6 +37,11 @@
       <Item>third</Item>
       <Item>fourth</Item>
       <Item>fifth</Item>
+      <Item>1</Item>
+      <Item>2</Item>
+      <Item>3</Item>
+      <Item>4</Item>
+      <Item>5</Item>
     </PhraseList>
     
   </CommandSet>
