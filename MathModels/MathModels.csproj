@@ -8,7 +8,7 @@
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MathModels</RootNamespace>
-    <AssemblyName>Queueing Theory Calculator</AssemblyName>
+    <AssemblyName>Queueing Theory</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
@@ -108,11 +108,6 @@
     <Compile Include="Common\NavigationService.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="MM1.cs" />
-    <Compile Include="MMinf.cs" />
-    <Compile Include="MMV.cs" />
-    <Compile Include="MMVK.cs" />
-    <Compile Include="MMVKN.cs" />
     <Compile Include="ViewModel\QueueVoiceCommand.cs" />
     <Compile Include="View\SelectedModel.xaml.cs">
       <DependentUpon>SelectedModel.xaml</DependentUpon>
@@ -166,6 +161,10 @@
     <ProjectReference Include="..\CortanaCommandService\CortanaCommandService.csproj">
       <Project>{e6c1fa11-9695-4721-bfa7-b227faacd105}</Project>
       <Name>CortanaCommandService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{63dfea8f-95f8-4d89-a243-c8f685911f20}</Project>
+      <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

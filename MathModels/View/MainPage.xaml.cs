@@ -30,7 +30,7 @@ namespace MathModels.View
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
             this.navigationHelper.SaveState += navigationHelper_SaveState;
-            ApplicationView.PreferredLaunchViewSize = new Size(1024, 550);
+            ApplicationView.PreferredLaunchViewSize = new Size(1024, 600);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             var view = ApplicationView.GetForCurrentView();
 

@@ -195,5 +195,10 @@
         <InkCanvas x:Name="inkCanvas" HorizontalAlignment="Left" Height="448" Margin="530,118,0,0" VerticalAlignment="Top" Width="441"/>
         <inkTools:InkToolbar x:Name="inkToolbar" TargetInkCanvas="{x:Bind inkCanvas}" VerticalAlignment="Top" HorizontalAlignment="Left" PenColor="Orange" Margin="868,61,0,0"></inkTools:InkToolbar>
         <ToggleSwitch Toggled="ToggleSwitch_Toggled" x:Name="toggleSwitch"  OnContent="On" OffContent="Off" Header="Inking on the chart" HorizontalAlignment="Left" Margin="26,448,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <MediaElement x:Name="Media"></MediaElement>
+        <Button x:Name="bListen" Click="Listen_Click" Height="45" Width="45" HorizontalAlignment="Left" VerticalAlignment="Top"  Background="#FFFD7313" Margin="26,513,0,89" Opacity="0.9">
+            <SymbolIcon x:Name="mic" Symbol="Microphone" Height="45" Width="45" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"></SymbolIcon>
+        </Button>
+        <TextBlock x:Name="sayText" HorizontalAlignment="Left" Margin="86,513,0,89" TextWrapping="Wrap" Text="Say &quot;Start listening&quot;" VerticalAlignment="Top" RequestedTheme="Dark" Height="38" Padding="0,8,0,0"/>
     </Grid>
 </Page>

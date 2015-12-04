@@ -21,55 +21,19 @@ namespace CortanaCommandService
             taskInstance.Canceled += OnTaskCanceled;
             var triggerDetails = taskInstance.TriggerDetails as AppServiceTriggerDetails;
 
-            VoiceCommandResponse response;
             try
             {
                 voiceServiceConnection = VoiceCommandServiceConnection.FromAppServiceTriggerDetails(triggerDetails);
                 voiceServiceConnection.VoiceCommandCompleted += VoiceCommandCompleted;
                 VoiceCommand voiceCommand = await voiceServiceConnection.GetVoiceCommandAsync();
-                VoiceCommandUserMessage userMessage = new VoiceCommandUserMessage();
 
                 switch (voiceCommand.CommandName)
                 {
                     case "graphParams":
-                            var modelnumber = voiceCommand.Properties["modelnumber"][0];
-                            var responseMessage = new VoiceCommandUserMessage()
-                            {
-                                DisplayMessage = String.Format("Draw queueing model {0} graph?", modelnumber),
-                                SpokenMessage = String.Format("Do you want me to draw the graph for model {0}?", modelnumber)
-                            };
-
-                            var repeatMessage = new VoiceCommandUserMessage()
-                            {
-                                DisplayMessage = String.Format("Are you sure you want me to draw the graph for model {0}?", modelnumber),
-                                SpokenMessage = String.Format("Are you sure you want me to draw the graph for model {0}?", modelnumber)
-                            };
-
-                            bool allowed = false;
-                            response = VoiceCommandResponse.CreateResponseForPrompt(responseMessage, repeatMessage);
-                            try
-                            {
-                                var confirmation = await voiceServiceConnection.RequestConfirmationAsync(response);
-                                allowed = confirmation.Confirmed;
-                            }
-                            catch
-                            {
-
-                            }
-                            if (allowed)
-                            {
-                                userMessage.DisplayMessage = userMessage.SpokenMessage = "Done and Done! Here is your graph.";
-
-                                response = VoiceCommandResponse.CreateResponse(userMessage);
-                                await voiceServiceConnection.ReportSuccessAsync(response);
-                            }
-                            else
-                            {
-                                userMessage.DisplayMessage = userMessage.SpokenMessage = "OK then";
-                                response = VoiceCommandResponse.CreateResponse(userMessage);
-                                await voiceServiceConnection.ReportSuccessAsync(response);
-                            }
-                            break;
+                        var modelnumber = voiceCommand.Properties["modelnumber"][0];
+                        SendConfirmationSuccess(modelnumber);
+                        
+                        break;
                     // As a last resort launch the app in the foreground
                     default:
                         LaunchAppInForeground();
@@ -78,10 +42,7 @@ namespace CortanaCommandService
             }
             catch (Exception ex)
             {
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
+                Debug.WriteLine(ex.Message);
             }
             finally
             {
@@ -93,10 +54,81 @@ namespace CortanaCommandService
             }
         }
 
+        private async void SendConfirmationSuccess(string modelnumber)
+        {
+            VoiceCommandUserMessage userMessage;
+            VoiceCommandResponse response;
+
+            var responseMessage = new VoiceCommandUserMessage()
+            {
+                DisplayMessage = String.Format("Get likelihood results for the model {0}?", modelnumber),
+                SpokenMessage = String.Format("Do you want me to get likelihood results for the model {0}?", modelnumber)
+            };
+
+            var repeatMessage = new VoiceCommandUserMessage()
+            {
+                DisplayMessage = String.Format("Do you still want me to get likelihood results for the model {0}?", modelnumber),
+                SpokenMessage = String.Format("Do you still want me to get likelihood results for the model {0}?", modelnumber)
+            };
+
+            bool allowed = false;
+            response = VoiceCommandResponse.CreateResponseForPrompt(responseMessage, repeatMessage);
+            try
+            {
+                var confirmation = await voiceServiceConnection.RequestConfirmationAsync(response);
+                allowed = confirmation.Confirmed;
+            }
+            catch
+            {
+
+            }
+            if (allowed)
+            {
+                userMessage = new VoiceCommandUserMessage()
+                {
+                    DisplayMessage = String.Format("Here is your likelihood results for the model {0}.", modelnumber),
+                    SpokenMessage = "Done and Done! Here is your results."
+                };
+                response = VoiceCommandResponse.CreateResponse(userMessage);
+
+                var resultContentTiles = GetLikelihoodForSelectedModel(modelnumber);
+
+                response.AppLaunchArgument = modelnumber.ToString();
+                await voiceServiceConnection.ReportSuccessAsync(response);
+            }
+            else
+            {
+                userMessage = new VoiceCommandUserMessage()
+                {
+                    DisplayMessage = "OK then",
+                    SpokenMessage = "OK, then"
+                };
+                response = VoiceCommandResponse.CreateResponse(userMessage);
+                await voiceServiceConnection.ReportSuccessAsync(response);
+            }
+        }
+
+        private List<VoiceCommandContentTile> GetLikelihoodForSelectedModel(string modelnumber)
+        {
+            var resultContentTiles = new List<VoiceCommandContentTile>();
+            int model = Models.Point.GetNumberByModel(Models.Point.GetModelByNumber(modelnumber));
+
+            //for ()
+            //{
+            //    var modelTile = new VoiceCommandContentTile();
+            //
+            //    modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
+            //
+            //    modelTile.Title = ;
+            //    resultContentTiles.Add(modelTile);
+            //}
+            return resultContentTiles;
+        }
+
         private async void LaunchAppInForeground()
         {
             var userMessage = new VoiceCommandUserMessage();
-            userMessage.SpokenMessage = "Launching Queueing Models Calculator";
+            userMessage.SpokenMessage = "Launching Queueing Theory Calculator";
 
             var response = VoiceCommandResponse.CreateResponse(userMessage);
             response.AppLaunchArgument = "";
@@ -116,6 +148,6 @@ namespace CortanaCommandService
             {
                 this.serviceDeferral.Complete();
             }
-        }
+        }        
     }
 }

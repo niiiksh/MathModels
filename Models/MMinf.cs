@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 
-namespace MathModels
+namespace Models
 {
-    class MMinf
+    public class MMinf
     {
         public MMinf() { }
 
@@ -26,12 +29,12 @@ namespace MathModels
         public static void CalcPk(double lambda, double mu, ListView list, WinRTXamlToolkit.Controls.DataVisualization.Charting.Chart lineChart)
         {
             lineChart.Title = "P(k)";
-            List<View.Point> chartList = new List<View.Point>();
+            List<Point> chartList = new List<Point>();
             double ro = lambda / mu;
             for (int k = 0; k <= 10; k++)
             {
                 list.Items.Add(k + ") " + Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k));
-                chartList.Add(new View.Point() { x_axis = k, y_axis = Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k) });
+                chartList.Add(new Point() { x_axis = k, y_axis = Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k) });
             }
             (lineChart.Series[0] as AreaSeries).ItemsSource = chartList;
             (lineChart.Series[0] as AreaSeries).Title = "P(k)";

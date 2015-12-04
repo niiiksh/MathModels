@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathModels", "MathModels\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CortanaCommandService", "CortanaCommandService\CortanaCommandService.csproj", "{E6C1FA11-9695-4721-BFA7-B227FAACD105}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{63DFEA8F-95F8-4D89-A243-C8F685911F20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|Any CPU.Build.0 = Debug|x86
+		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|ARM.ActiveCfg = Debug|ARM
 		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|ARM.Build.0 = Debug|ARM
 		{5651DEEB-96C0-4DF4-824E-3DD408BC97E9}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -61,6 +65,22 @@ Global
 		{E6C1FA11-9695-4721-BFA7-B227FAACD105}.Release|x64.Build.0 = Release|x64
 		{E6C1FA11-9695-4721-BFA7-B227FAACD105}.Release|x86.ActiveCfg = Release|x86
 		{E6C1FA11-9695-4721-BFA7-B227FAACD105}.Release|x86.Build.0 = Release|x86
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|ARM.ActiveCfg = Debug|ARM
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|ARM.Build.0 = Debug|ARM
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|x64.ActiveCfg = Debug|x64
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|x64.Build.0 = Debug|x64
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|x86.ActiveCfg = Debug|x86
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Debug|x86.Build.0 = Debug|x86
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|ARM.ActiveCfg = Release|ARM
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|ARM.Build.0 = Release|ARM
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|x64.ActiveCfg = Release|x64
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|x64.Build.0 = Release|x64
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|x86.ActiveCfg = Release|x86
+		{63DFEA8F-95F8-4D89-A243-C8F685911F20}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

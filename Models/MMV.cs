@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 
-namespace MathModels
+namespace Models
 {
-    class MMV
+    public class MMV
     {
         public MMV() { }
         static double Factorial(double x)
@@ -25,7 +28,7 @@ namespace MathModels
 
         public static void CalcPi(double lambda, double mu, int v, ListView list, WinRTXamlToolkit.Controls.DataVisualization.Charting.Chart lineChart)
         {
-            List<View.Point> chartList = new List<View.Point>();
+            List<Point> chartList = new List<Point>();
             double znam = 0;
             double ro = lambda / mu;
             for (int x = 0; x <= v - 1; x++)
@@ -36,7 +39,7 @@ namespace MathModels
             for (int i = 0; i <= v; i++)
             {
                 list.Items.Add(i + ") " + Math.Pow(ro, i) / Factorial(i) / znam);
-                chartList.Add(new View.Point() { x_axis = i, y_axis = Math.Pow(ro, i) / Factorial(i) / znam });
+                chartList.Add(new Point() { x_axis = i, y_axis = Math.Pow(ro, i) / Factorial(i) / znam });
             }
             (lineChart.Series[0] as AreaSeries).ItemsSource = chartList;
             (lineChart.Series[0] as AreaSeries).Title = "P(i)";
@@ -44,7 +47,7 @@ namespace MathModels
 
         public static void CalcWj(double lambda, double mu, int v, ListView list, WinRTXamlToolkit.Controls.DataVisualization.Charting.Chart lineChart)
         {
-            List<View.Point> chartList2 = new List<View.Point>();
+            List<Point> chartList2 = new List<Point>();
             double znam = 0;
             double ro = lambda / mu;
             for (int x = 0; x <= v - 1; x++)
@@ -55,7 +58,7 @@ namespace MathModels
             for (int j = 0; j <= v + 10; j++)
             {
                 list.Items.Add(j + ") " + Math.Pow(ro, v) / Factorial(v) * Math.Pow(ro / v, j) / znam);
-                chartList2.Add(new View.Point() { x_axis = j+v, y_axis = Math.Pow(ro, v) / Factorial(v) * Math.Pow(ro / v, j) / znam });
+                chartList2.Add(new Point() { x_axis = j + v, y_axis = Math.Pow(ro, v) / Factorial(v) * Math.Pow(ro / v, j) / znam });
             }
             (lineChart.Series[1] as AreaSeries).ItemsSource = chartList2;
             (lineChart.Series[1] as AreaSeries).Title = "W(j)";
@@ -70,7 +73,7 @@ namespace MathModels
                 znam += Math.Pow(ro, x) / Factorial(x);
             }
             znam += Math.Pow(ro, v) * v / (Factorial(v) * (v - ro));
-            return Math.Pow(ro, v) / Factorial(v) * v / (v-ro) / znam;
+            return Math.Pow(ro, v) / Factorial(v) * v / (v - ro) / znam;
         }
     }
 }

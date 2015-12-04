@@ -1,8 +1,13 @@
 ﻿using MathModels.Common;
 using MathModels.ViewModel;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Media.SpeechRecognition;
+using Windows.Media.SpeechSynthesis;
 using Windows.UI;
 using Windows.UI.Input.Inking;
 using Windows.UI.ViewManagement;
@@ -18,11 +23,6 @@ namespace MathModels.View
     /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
     /// </summary>
     /// 
-    public class Point: Page
-    {
-        public double x_axis { get; set; }
-        public double y_axis { get; set; }
-    }
 
     public sealed partial class SelectedModel : Page
     {
@@ -30,6 +30,11 @@ namespace MathModels.View
         const int penSizeIncrement = 2;
         int penSize;
         private NavigationHelper navigationHelper;
+        private SpeechRecognizer speechRecognizer;
+        private SpeechRecognizer speechRecognizerContinuous;
+        private ManualResetEvent manualResetEvent;
+
+        bool listening = false;
 
         public SelectedModel()
         {
@@ -76,8 +81,10 @@ namespace MathModels.View
                 if (Window.Current.Bounds.Width - 531 > 0)
                     inkCanvas.MinWidth = Window.Current.Bounds.Width - 531;
                 inkToolbar.Margin = new Thickness(Window.Current.Bounds.Width - 156, 61, 0, 0);
-                ProgressRing.Margin = new Thickness(85, bResult.Margin.Top + 50, 0, 0);
                 toggleSwitch.Margin = new Thickness(26, bResult.Margin.Top + 50, 0, 0);
+                ProgressRing.Margin = new Thickness(85, toggleSwitch.Margin.Top + 60, 0, 0);
+                bListen.Margin = new Thickness(26, bResult.Margin.Top + 120, 0, 0);
+                sayText.Margin = new Thickness(86, bResult.Margin.Top + 120, 0, 0);
             };
         }
 
@@ -134,6 +141,10 @@ namespace MathModels.View
                     }
                 }
             }
+            else
+            {
+                Frame.Navigate(typeof(View.MainPage), "");
+            }
         }
 
         /// <summary>
@@ -163,6 +174,11 @@ namespace MathModels.View
         {
             HubModels.Header = e.Parameter.ToString();
             //var i = new MessageDialog("You sent me: " + e.Parameter.ToString()).ShowAsync();
+
+            manualResetEvent = new ManualResetEvent(false);
+            Media.MediaEnded += Media_MediaEnded;
+            InitContiniousRecognition();
+
             HubSectionGraph.MinWidth = Window.Current.Bounds.Width - 500;
             listViewResults.Height = Window.Current.Bounds.Height - 310;
             listView.Margin = new Thickness(264, Window.Current.Bounds.Height - 184, 0, 0);
@@ -178,6 +194,7 @@ namespace MathModels.View
             tbError.Visibility = Visibility.Collapsed;
             toggleSwitch.Visibility = Visibility.Visible;
             SetControlsPosition(HubModels.Header.ToString());
+
             navigationHelper.OnNavigatedTo(e);
         }
 
@@ -208,6 +225,25 @@ namespace MathModels.View
                 default:
                     //return "Error page";
                     return "M|M|V";
+            }
+        }
+
+        public int GetNumberByModel(string modelname)
+        {
+            switch (modelname)
+            {
+                case "M|M|1":
+                    return 1;
+                case "M|M|∞":
+                    return 2;
+                case "M|M|V":
+                    return 3;
+                case "M|M|V|K":
+                    return 4;
+                case "M|M|V|K|N":
+                    return 5;
+                default:
+                    return 0;
             }
         }
 
@@ -259,12 +295,18 @@ namespace MathModels.View
                 tbLambda.PlaceholderText = "0<a<1";
                 tbMu.PlaceholderText = "μ>0";
             }
-            ProgressRing.Margin = new Thickness(85, bResult.Margin.Top + 50, 0, 0);
             toggleSwitch.Margin = new Thickness(26, bResult.Margin.Top + 50, 0, 0);
+            ProgressRing.Margin = new Thickness(85, toggleSwitch.Margin.Top + 60, 0, 0);
+            bListen.Margin = new Thickness(26, bResult.Margin.Top + 120, 0, 0);
+            sayText.Margin = new Thickness(86, bResult.Margin.Top + 120, 0, 0);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (listening)
+            {
+                SetListening(false, GetNumberByModel(HubModels.Header.ToString()));
+            }
             navigationHelper.OnNavigatedFrom(e);
         }
 
@@ -481,7 +523,6 @@ namespace MathModels.View
         public async void bResult_Click(object sender, RoutedEventArgs e)
         {
             tbError.Visibility = Visibility.Collapsed;
-            toggleSwitch.Visibility = Visibility.Collapsed;
             ProgressRing.IsActive = true;
             await Task.Delay(100);
             await Task.Yield();
@@ -493,17 +534,17 @@ namespace MathModels.View
                 listViewResults.Header = "P(k):";
                 if (HubModels.Header.ToString() == "M|M|1")
                 {
-                    MM1.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), listViewResults, LineChart);
-                    listView.Items.Add("K(avg) = " + MM1.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
-                    listView.Items.Add("W[s](avg) = " + MM1.CalcWs_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
-                    listView.Items.Add("L[q](avg) = " + MM1.CalcLq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
-                    listView.Items.Add("W[q](avg) = " + MM1.CalcWq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    Models.MM1.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), listViewResults, LineChart);
+                    listView.Items.Add("K(avg) = " + Models.MM1.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    listView.Items.Add("W[s](avg) = " + Models.MM1.CalcWs_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    listView.Items.Add("L[q](avg) = " + Models.MM1.CalcLq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    listView.Items.Add("W[q](avg) = " + Models.MM1.CalcWq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                 }
                 else if(HubModels.Header.ToString() == "M|M|∞")
                 {
-                    MMinf.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), listViewResults, LineChart);
-                    listView.Items.Add("K(avg) = " + MMinf.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
-                    listView.Items.Add("W[s](avg) = " + MMinf.CalcWs_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    Models.MMinf.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), listViewResults, LineChart);
+                    listView.Items.Add("K(avg) = " + Models.MMinf.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
+                    listView.Items.Add("W[s](avg) = " + Models.MMinf.CalcWs_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                 }
             }
              if ((HubModels.Header.ToString() == "M|M|V" || HubModels.Header.ToString() == "M|M|V|K") && CheckInput3M4M())
@@ -513,17 +554,17 @@ namespace MathModels.View
                 {
                     listViewResults.Header = "P(i) + W(j):";
                     LineChart.Title = "P(k): P(i) + W(j)";
-                    MMV.CalcPi(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
-                    MMV.CalcWj(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
-                    listView.Items.Add("ɣ(avg) = " + MMV.CalcGamma_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
-                    listView.Items.Add("j(avg) = " + MMV.CalcJ_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
-                    listView.Items.Add("P[t] = " + MMV.CalcPt(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
+                    Models.MMV.CalcPi(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
+                    Models.MMV.CalcWj(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
+                    listView.Items.Add("ɣ(avg) = " + Models.MMV.CalcGamma_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
+                    listView.Items.Add("j(avg) = " + Models.MMV.CalcJ_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
+                    listView.Items.Add("P[t] = " + Models.MMV.CalcPt(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
                 }
                 else if (HubModels.Header.ToString() == "M|M|V|K")
                 {
                     listViewResults.Header = "P(k):";
-                    MMVK.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
-                    listView.Items.Add("P[v] = " + MMVK.CalcPv(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
+                    Models.MMVK.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), listViewResults, LineChart);
+                    listView.Items.Add("P[v] = " + Models.MMVK.CalcPv(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text)));
                 }
             }
 
@@ -531,23 +572,201 @@ namespace MathModels.View
             {
                 LineChart.Visibility = Visibility.Visible;
                 listViewResults.Header = "P[k]";
-                MMVKN.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text), listViewResults, LineChart);
-                listView.Items.Add("K(avg) = " + MMVKN.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text)));
-                listView.Items.Add("T(avg) = " + MMVKN.CalcT_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text)));
-                listView.Items.Add("P[t] = " + MMVKN.CalcPt(double.Parse(tbLambda.Text), uint.Parse(tbV.Text), uint.Parse(tbN.Text)));
-                listView.Items.Add("P[v] = " + MMVKN.CalcPv(double.Parse(tbLambda.Text), uint.Parse(tbV.Text), uint.Parse(tbN.Text)));
+                Models.MMVKN.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text), listViewResults, LineChart);
+                listView.Items.Add("K(avg) = " + Models.MMVKN.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text)));
+                listView.Items.Add("T(avg) = " + Models.MMVKN.CalcT_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text)));
+                listView.Items.Add("P[t] = " + Models.MMVKN.CalcPt(double.Parse(tbLambda.Text), uint.Parse(tbV.Text), uint.Parse(tbN.Text)));
+                listView.Items.Add("P[v] = " + Models.MMVKN.CalcPv(double.Parse(tbLambda.Text), uint.Parse(tbV.Text), uint.Parse(tbN.Text)));
             }
             ProgressRing.IsActive = false;
-            if(tbError.Visibility == Visibility.Visible)
+            ToggleSwitch_Toggled(this, new RoutedEventArgs());
+            inkCanvas.InkPresenter.StrokeContainer.Clear();
+        }
+
+        private void Listen_Click(object sender, RoutedEventArgs e)
+        {
+            SetListening(!listening, GetNumberByModel(HubModels.Header.ToString()));
+        }
+
+        private async Task SpeakAsync(string toSpeak)
+        {
+            SpeechSynthesizer speechSyntesizer = new SpeechSynthesizer();
+            SpeechSynthesisStream syntStream = await speechSyntesizer.SynthesizeTextToStreamAsync(toSpeak);
+            Media.SetSource(syntStream, syntStream.ContentType);
+
+            Task t = Task.Run(() =>
             {
-                toggleSwitch.Visibility = Visibility.Collapsed;
+                manualResetEvent.Reset();
+                manualResetEvent.WaitOne();
+            });
+
+            await t;
+        }
+
+        private async Task InitSpeech()
+        {
+            if (speechRecognizer == null)
+            {
+                try
+                {
+                    speechRecognizer = new SpeechRecognizer();
+
+                    SpeechRecognitionCompilationResult compilationResult = await speechRecognizer.CompileConstraintsAsync();
+                    speechRecognizer.HypothesisGenerated += SpeechRecognizer_HypothesisGenerated;
+
+                    if (compilationResult.Status != SpeechRecognitionResultStatus.Success)
+                        throw new Exception();
+
+                    Debug.WriteLine("SpeechInit OK");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("SpeechInit Failed: " + ex.Message);
+                    speechRecognizer = null;
+                }
+            }
+        }
+        private async Task InitContiniousRecognition()
+        {
+            try
+            {
+                if (speechRecognizerContinuous == null)
+                {
+                    speechRecognizerContinuous = new SpeechRecognizer();
+                    speechRecognizerContinuous.Constraints.Add(
+                        new SpeechRecognitionListConstraint(
+                            new List<String>() { "Start listening" }, "start"));
+                    SpeechRecognitionCompilationResult contCompilationResult =
+                        await speechRecognizerContinuous.CompileConstraintsAsync();
+
+
+                    if (contCompilationResult.Status != SpeechRecognitionResultStatus.Success)
+                    {
+                        throw new Exception();
+                    }
+                    speechRecognizerContinuous.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
+                }
+                await speechRecognizerContinuous.ContinuousRecognitionSession.StartAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private async void ContinuousRecognitionSession_ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
+        {
+            if (args.Result.Confidence == SpeechRecognitionConfidence.Medium ||
+                args.Result.Confidence == SpeechRecognitionConfidence.High)
+            {
+                if (args.Result.Text == "Start listening")
+                {
+                    await Media.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                    {
+                        SetListening(true, GetNumberByModel(HubModels.Header.ToString()));
+                    });
+                }
+            }
+        }
+
+        private async Task SetListening(bool toListen, int model)
+        {
+            if (toListen)
+            {
+                listening = true;
+                tbLambda.IsEnabled = false;
+                mic.Symbol = Symbol.Cancel;
+                tbLambda.PlaceholderText = "Waiting...";
+
+                if (speechRecognizerContinuous != null)
+                    await speechRecognizerContinuous.ContinuousRecognitionSession.CancelAsync();
+
+                StartListenMode();
             }
             else
             {
-                toggleSwitch.Visibility = Visibility.Visible;
+                listening = false;
+                tbLambda.IsEnabled = true;
+                mic.Symbol = Symbol.Microphone;
+                ProgressRing.IsActive = false;
+
+                if (speechRecognizerContinuous != null)
+                    await speechRecognizerContinuous.ContinuousRecognitionSession.StartAsync();
             }
-            ToggleSwitch_Toggled(this, new RoutedEventArgs());
-            inkCanvas.InkPresenter.StrokeContainer.Clear();
+        }
+
+        private async void StartListenMode()
+        {
+            while (listening)
+            {
+                string spokenText = await ListenForText();
+                while (string.IsNullOrWhiteSpace(spokenText) && listening)
+                    spokenText = await ListenForText();
+
+                if (spokenText.ToLower().Contains("stop listening"))
+                {
+                    speechRecognizer.UIOptions.AudiblePrompt = "Are you sure you want me to stop listening?";
+                    //speechRecognizer.UIOptions.ExampleText = "Yes/No";
+                    speechRecognizer.UIOptions.ShowConfirmation = false;
+                    //SpeakAsync(speechRecognizer.UIOptions.AudiblePrompt);
+                    var result = await speechRecognizer.RecognizeWithUIAsync();
+
+                    if (!string.IsNullOrWhiteSpace(result.Text) && (result.Text.ToLower() == "yes" 
+                                                                    || result.Text.ToLower() == "i'm sure"
+                                                                    || result.Text.ToLower() == "i am sure"))
+                    {
+                        await SetListening(false, 0);
+                    }
+                }
+
+                if (listening)
+                {
+                    tbLambda.Text = spokenText;
+                }
+            }
+        }
+
+        private async Task<string> ListenForText()
+        {
+            string result = "";
+            await InitSpeech();
+            try
+            {
+                tbError.Visibility = Visibility.Collapsed;
+                toggleSwitch.Visibility = Visibility.Visible;
+                ProgressRing.IsActive = true;
+                sayText.Visibility = Visibility.Collapsed;
+                tbLambda.PlaceholderText = "Listening...";
+                SpeechRecognitionResult speechRecognitionResult = await speechRecognizer.RecognizeAsync();
+                if (speechRecognitionResult.Status == SpeechRecognitionResultStatus.Success)
+                {
+                    result = speechRecognitionResult.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                ProgressRing.IsActive = false;
+                sayText.Visibility = Visibility.Visible;
+                tbLambda.PlaceholderText = "placeholder_temp";
+            }
+            return result;
+        }
+
+        private async void SpeechRecognizer_HypothesisGenerated(SpeechRecognizer sender, SpeechRecognitionHypothesisGeneratedEventArgs args)
+        {
+            await tbLambda.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                tbLambda.Text = args.Hypothesis.Text;
+            });
+        }
+
+        private void Media_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            manualResetEvent.Set();
         }
     }
 }

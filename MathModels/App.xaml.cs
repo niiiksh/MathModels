@@ -6,6 +6,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Media.SpeechRecognition;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -74,20 +75,21 @@ namespace MathModels
             // Обеспечение активности текущего окна
             Window.Current.Activate();
 
+            // Установка словаря голосовых команд (VCD)
             try
             {
-                // Install the main VCD. Since there's no simple way to test that the VCD has been imported, or that it's your most recent
-                // version, it's not unreasonable to do this upon app load.
-                StorageFile storageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///vcd.xml"));
+                var storageFile =
+                await Windows.Storage.StorageFile
+                .GetFileFromApplicationUriAsync(new Uri("ms-appx:///vcd.xml"));
 
-                await Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(storageFile);
+                await Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager
+                    .InstallCommandDefinitionsFromStorageFileAsync(storageFile);
+
+                Debug.WriteLine("VCD installed");
             }
             catch
             {
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
+                Debug.WriteLine("VCD installation failed");
             }
         }
 
