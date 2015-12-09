@@ -41,5 +41,10 @@ namespace Models
             (lineChart.Series[1] as AreaSeries).Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             (lineChart.Series[1] as AreaSeries).Title = "";
         }
+        public static string CortanaCalkPk(double lambda, double mu, int k)
+        {
+            double ro = lambda / mu;
+            return (Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k)).ToString();
+        }
     }
 }

@@ -27,8 +27,8 @@ namespace MathModels
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
                 Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
                 Microsoft.ApplicationInsights.WindowsCollectors.Session);
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
         }
 
         public static NavigationService NavigationService { get; private set; }
@@ -146,13 +146,13 @@ namespace MathModels
                 // The commandMode is either "voice" or "text", and it indictes how the voice command
                 // was entered by the user.
                 // Apps should respect "text" mode by providing feedback in silent form.
-                string commandMode = this.SemanticInterpretation("commandMode", speechRecognitionResult);
+                string commandMode = SemanticInterpretation("commandMode", speechRecognitionResult);
 
                 switch (voiceCommandName)
                 {
                     case "showGraph":
                         // Access the value of the {destination} phrase in the voice command
-                        string modelnumber = this.SemanticInterpretation("modelnumber", speechRecognitionResult);
+                        string modelnumber = SemanticInterpretation("modelnumber", speechRecognitionResult);
                         // Create a navigation command object to pass to the page. Any object can be passed in,
                         // here we're using a simple struct.
                         navigationCommand = new ViewModel.QueueVoiceCommand(

@@ -38,7 +38,7 @@ namespace MathModels.View
 
         public SelectedModel()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             penSize = minPenSize + penSizeIncrement * 1;
             InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
@@ -51,9 +51,9 @@ namespace MathModels.View
             inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
             inkCanvas.InkPresenter.InputDeviceTypes = Windows.UI.Core.CoreInputDeviceTypes.Mouse | Windows.UI.Core.CoreInputDeviceTypes.Pen;
 
-            this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += navigationHelper_LoadState;
-            this.navigationHelper.SaveState += navigationHelper_SaveState;
+            navigationHelper = new NavigationHelper(this);
+            navigationHelper.LoadState += navigationHelper_LoadState;
+            navigationHelper.SaveState += navigationHelper_SaveState;
             var view = ApplicationView.GetForCurrentView();
 
             view.TitleBar.BackgroundColor = Color.FromArgb(255, 253, 115, 19);
@@ -115,7 +115,7 @@ namespace MathModels.View
                 // artificially populate the page backstack so we have something to
                 // go back to to get to the main page.
                 PageStackEntry backEntry = new PageStackEntry(typeof(View.MainPage), null, null);
-                this.Frame.BackStack.Add(backEntry);
+                Frame.BackStack.Add(backEntry);
             }
             else if (e.NavigationParameter is string)
             {
@@ -137,7 +137,7 @@ namespace MathModels.View
                         // artificially populate the page backstack so we have something to
                         // go back to to get to the main page.
                         PageStackEntry backEntry = new PageStackEntry(typeof(View.MainPage), null, null);
-                        this.Frame.BackStack.Add(backEntry);
+                        Frame.BackStack.Add(backEntry);
                     }
                 }
             }
@@ -291,7 +291,7 @@ namespace MathModels.View
             }
             else
             {
-                tbLambda.Header = "Enter a"; //lambda = a (M|M|V|K|N)
+                tbLambda.Header = "Enter a"; //lambda is a in M|M|V|K|N
                 tbLambda.PlaceholderText = "0<a<1";
                 tbMu.PlaceholderText = "μ>0";
             }
@@ -326,13 +326,13 @@ namespace MathModels.View
                 }
                 else if (double.Parse(tbLambda.Text) / double.Parse(tbMu.Text) >= 1 && HubModels.Header.ToString() != "M|M|∞")
                 {
-                    tbError.Text = "λ/μ is more or equal 1!";
+                    tbError.Text = String.Format("λ/μ={0} is more or equal 1!", double.Parse(tbLambda.Text) / double.Parse(tbMu.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (double.Parse(tbLambda.Text) / double.Parse(tbMu.Text) <= 0)
                 {
-                    tbError.Text = "λ/μ is less or equal 0!";
+                    tbError.Text = String.Format("λ/μ={0} is less or equal 0!", double.Parse(tbLambda.Text) / double.Parse(tbMu.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
@@ -368,19 +368,19 @@ namespace MathModels.View
                 }
                 else if (double.Parse(tbLambda.Text) / (int.Parse(tbV.Text) * double.Parse(tbMu.Text)) >= 1)
                 {
-                    tbError.Text = "λ/(v*μ) is more or equal 1!";
+                    tbError.Text = String.Format("λ/(v*μ)={0} is more or equal 1!", double.Parse(tbLambda.Text) / (int.Parse(tbV.Text) * double.Parse(tbMu.Text)));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (double.Parse(tbLambda.Text) / (int.Parse(tbV.Text) * double.Parse(tbMu.Text)) <= 0)
                 {
-                    tbError.Text = "λ/(v*μ) is less or equal 0!";
+                    tbError.Text = String.Format("λ/(v*μ)={0} is less or equal 0!", double.Parse(tbLambda.Text) / (int.Parse(tbV.Text) * double.Parse(tbMu.Text)));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (int.Parse(tbV.Text) <= 0)
                 {
-                    tbError.Text = "v is less or equal 0!";
+                    tbError.Text = String.Format("v={0} is less or equal 0!", int.Parse(tbV.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
@@ -415,25 +415,25 @@ namespace MathModels.View
                 }
                 else if (double.Parse(tbLambda.Text) <= 0)
                 {
-                    tbError.Text = "a is less or equal 0!";
+                    tbError.Text = String.Format("a={0} is less or equal 0!", double.Parse(tbLambda.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (double.Parse(tbLambda.Text) >= 1)
                 {
-                    tbError.Text = "a is more or equal 1!";
+                    tbError.Text = String.Format("a={0} is more or equal 1!", double.Parse(tbLambda.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (double.Parse(tbMu.Text) <= 0)
                 {
-                    tbError.Text = "μ is less or equal 0!";
+                    tbError.Text = String.Format("μ={0} is less or equal 0!", double.Parse(tbMu.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
                 else if (double.Parse(tbN.Text) < double.Parse(tbV.Text))
                 {
-                    tbError.Text = "N is less than V!";
+                    tbError.Text = String.Format("N={0} is less than V={1}!", double.Parse(tbN.Text), double.Parse(tbV.Text));
                     tbError.Visibility = Visibility.Visible;
                     toggleSwitch.Visibility = Visibility.Collapsed;
                 }
@@ -523,6 +523,8 @@ namespace MathModels.View
         public async void bResult_Click(object sender, RoutedEventArgs e)
         {
             tbError.Visibility = Visibility.Collapsed;
+            sayText.Visibility = Visibility.Collapsed;
+            bListen.IsEnabled = false;
             ProgressRing.IsActive = true;
             await Task.Delay(100);
             await Task.Yield();
@@ -579,6 +581,8 @@ namespace MathModels.View
                 listView.Items.Add("P[v] = " + Models.MMVKN.CalcPv(double.Parse(tbLambda.Text), uint.Parse(tbV.Text), uint.Parse(tbN.Text)));
             }
             ProgressRing.IsActive = false;
+            bListen.IsEnabled = true;
+            sayText.Visibility = Visibility.Visible;
             ToggleSwitch_Toggled(this, new RoutedEventArgs());
             inkCanvas.InkPresenter.StrokeContainer.Clear();
         }
@@ -767,6 +771,20 @@ namespace MathModels.View
         private void Media_MediaEnded(object sender, RoutedEventArgs e)
         {
             manualResetEvent.Set();
+        }
+
+        private void toggleScheme_Toggled(object sender, RoutedEventArgs e)
+        {
+            if(toggleScheme.IsOn)
+            {
+                LineChart.Visibility = Visibility.Collapsed;
+                //TODO: Show scheme
+            }
+            else
+            {
+                LineChart.Visibility = Visibility.Visible;
+                //TODO: Hide scheme
+            }
         }
     }
 }

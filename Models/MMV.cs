@@ -63,6 +63,28 @@ namespace Models
             (lineChart.Series[1] as AreaSeries).ItemsSource = chartList2;
             (lineChart.Series[1] as AreaSeries).Title = "W(j)";
         }
+        public static string CortanaCalkPi(double lambda, double mu, int v, int i)
+        {
+            double znam = 0;
+            double ro = lambda / mu;
+            for (int x = 0; x <= v - 1; x++)
+            {
+                znam += Math.Pow(ro, x) / Factorial(x);
+            }
+            znam += Math.Pow(ro, v) * v / (Factorial(v) * (v - ro));
+            return (Math.Pow(ro, i) / Factorial(i) / znam).ToString();
+        }
+        public static string CortanaCalkWj(double lambda, double mu, int v, int j)
+        {
+            double znam = 0;
+            double ro = lambda / mu;
+            for (int x = 0; x <= v - 1; x++)
+            {
+                znam += Math.Pow(ro, x) / Factorial(x);
+            }
+            znam += Math.Pow(ro, v) * v / (Factorial(v) * (v - ro));
+            return (Math.Pow(ro, v) / Factorial(v) * Math.Pow(ro / v, j) / znam).ToString();
+        }
 
         public static double CalcPt(double lambda, double mu, int v)
         {

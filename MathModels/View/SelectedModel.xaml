@@ -35,7 +35,7 @@
                     <!-- Content -->
                 </DataTemplate>
             </HubSection>
-            <HubSection x:Name="HubSectionGraph" Header="Chart" IsHeaderInteractive="False" Background="#5D8AA8" MinWidth="500" RequestedTheme="Dark" HorizontalAlignment="Stretch">
+            <HubSection x:Name="HubSectionGraph" Header="Chart/Scheme" IsHeaderInteractive="False" Background="#5D8AA8" MinWidth="500" RequestedTheme="Dark" HorizontalAlignment="Stretch">
                 <DataTemplate>
                     <!-- Content -->
                 </DataTemplate>
@@ -200,5 +200,30 @@
             <SymbolIcon x:Name="mic" Symbol="Microphone" Height="45" Width="45" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"></SymbolIcon>
         </Button>
         <TextBlock x:Name="sayText" HorizontalAlignment="Left" Margin="86,513,0,89" TextWrapping="Wrap" Text="Say &quot;Start listening&quot;" VerticalAlignment="Top" RequestedTheme="Dark" Height="38" Padding="0,8,0,0"/>
+        <!--Scheme-->
+        <ToggleSwitch Toggled="toggleScheme_Toggled" x:Name="toggleScheme" OnContent="" OffContent="" HorizontalAlignment="Left" Margin="513,91,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <!--M|M|1-->
+        <Ellipse x:Name="customer1_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="530,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+        <Ellipse x:Name="customer2_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="530,186,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+        <Ellipse x:Name="customer3_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="530,246,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+
+        <Rectangle x:Name="queuepart7_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="631,165,0,0"/>
+        <Rectangle x:Name="queuepart6_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="646,165,0,0"/>
+        <Rectangle x:Name="queuepart5_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="661,165,0,0"/>
+        <Rectangle x:Name="queuepart4_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="676,165,0,0"/>
+        <Rectangle x:Name="queuepart3_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="691,165,0,0"/>
+        <Rectangle x:Name="queuepart2_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="706,165,0,0"/>
+        <Rectangle x:Name="queuepart1_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="721,165,0,0"/>
+        
+        <Ellipse x:Name="server_m1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="788,191,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+        
+        <!--M|M|∞-->
+        
+        <!--M|M|V-->
+        
+        <!--M|M|V|K-->
+        
+        <!--M|M|V|K|N-->
+        
     </Grid>
 </Page>

@@ -2,27 +2,25 @@
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
   <CommandSet xml:lang="en-us" Name="CommandSet_en-us">
     <AppName>Queueing Theory</AppName>
-    <Example>What is a graph for the second queueing theory model</Example>
+    <Example>Show me the graph for queueing theory model five</Example>
 
     <Command Name="showGraph">
       <Example> Show me the random graph for queueing theory model three</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] [random] graph for [the] model {modelnumber} [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [random] graph for [the] model {modelnumber} [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [a] [the] [random] graph for [the] {modelnumber} model [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [a] [the] [random] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [random] graph for [the] {modelnumber} model [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [random] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
       <Feedback>Drawing graph for model {modelnumber}</Feedback>
       <Navigate/>
     </Command>
     
     <Command Name="graphParams">
-      <Example>What is a likelihood results for the model 2 with lambda 5 and mu 8 in queueing theory</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for [the] model one [1] [with] Lambda equal {vLambda} [and] Mu equal {vMu} [in] </ListenFor>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for [the] model two [2] [with] Lambda equal {vLambda} [and] Mu equal {vMu} [in] </ListenFor>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for [the] model three [3] [with] Lambda equal {vLambda} Mu equal {vMu} [and] V equal {vV} [in] </ListenFor>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for [the] model four [4] [with] Lambda equal {vLambda} Mu equal {vMu} [and] V equal {vV} [in] </ListenFor>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for [the] model five [5] [with] A equal {vLambda} Mu equal {vMu} V equal {vV} [and] N equal {vN} [in] </ListenFor>
-      <Feedback> Working on it...</Feedback>
+      <Example>What is a likelihood results for model 2 with lambda is 5 and mu is 8 in queueing theory</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} [with] lambda is {vLambda} [and] mu is {vMu} [in] </ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} [with] lambda is {vLambda} [and] mu is {vMu} [in] </ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} {anything} </ListenFor>
+      <Feedback> I'm on it</Feedback>
       <VoiceCommandService Target="CortanaCommands"/>
     </Command>
 
@@ -46,9 +44,7 @@
     
     <PhraseTopic Label="vLambda" />
     <PhraseTopic Label="vMu" />
-    <PhraseTopic Label="vV" />
-    <PhraseTopic Label="vN" />
-    
+    <PhraseTopic Label="anything" Scenario="Natural Language"/>
   </CommandSet>
 
 </VoiceCommands>
