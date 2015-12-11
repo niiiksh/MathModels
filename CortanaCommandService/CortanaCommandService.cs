@@ -33,6 +33,7 @@ namespace CortanaCommandService
                 switch (voiceCommand.CommandName)
                 {
                     case "graphParams":
+                        await ShowProgressScreen("Working on it...");
                         var modelnumber = voiceCommand.Properties["modelnumber"][0];
                         double lambda = 0;
                         double mu = 0;

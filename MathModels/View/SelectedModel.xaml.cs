@@ -13,7 +13,9 @@ using Windows.UI.Input.Inking;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 // Шаблон элемента пустой страницы задокументирован по адресу http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -39,6 +41,7 @@ namespace MathModels.View
         public SelectedModel()
         {
             InitializeComponent();
+            InitContiniousRecognition();
 
             penSize = minPenSize + penSizeIncrement * 1;
             InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
@@ -173,11 +176,11 @@ namespace MathModels.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             HubModels.Header = e.Parameter.ToString();
+            HideScheme();
             //var i = new MessageDialog("You sent me: " + e.Parameter.ToString()).ShowAsync();
 
             manualResetEvent = new ManualResetEvent(false);
             Media.MediaEnded += Media_MediaEnded;
-            InitContiniousRecognition();
 
             HubSectionGraph.MinWidth = Window.Current.Bounds.Width - 500;
             listViewResults.Height = Window.Current.Bounds.Height - 310;
@@ -200,7 +203,7 @@ namespace MathModels.View
 
         public string GetModelByNumber(string modelnumber)
         {
-            switch(modelnumber)
+            switch (modelnumber)
             {
                 case "one":
                 case "1":
@@ -316,6 +319,7 @@ namespace MathModels.View
         {
             double input;
             bool edited = false;
+            resultsReady = false;
             if (double.TryParse(tbLambda.Text, out input) && double.TryParse(tbMu.Text, out input))
             {
                 if (tbLambda.Text.ToString() == "" || tbMu.Text.ToString() == "")
@@ -341,6 +345,7 @@ namespace MathModels.View
                     tbError.Visibility = Visibility.Collapsed;
                     toggleSwitch.Visibility = Visibility.Visible;
                     edited = true;
+                    resultsReady = true;
                 }
             }
             else
@@ -357,6 +362,7 @@ namespace MathModels.View
             double input;
             int intinput;
             bool edited = false;
+            resultsReady = false;
             if (double.TryParse(tbLambda.Text, out input) && double.TryParse(tbMu.Text, out input)
                     && int.TryParse(tbV.Text, out intinput))
             {
@@ -389,6 +395,7 @@ namespace MathModels.View
                     tbError.Visibility = Visibility.Collapsed;
                     toggleSwitch.Visibility = Visibility.Visible;
                     edited = true;
+                    resultsReady = true;
                 }
             }
             else
@@ -404,6 +411,7 @@ namespace MathModels.View
             double input;
             int intinput;
             bool edited = false;
+            resultsReady = false;
             if (double.TryParse(tbLambda.Text, out input) && !tbLambda.Text.Contains(",") && double.TryParse(tbMu.Text, out input)
                     && int.TryParse(tbN.Text, out intinput) && int.TryParse(tbV.Text, out intinput))
             {
@@ -442,6 +450,7 @@ namespace MathModels.View
                     tbError.Visibility = Visibility.Collapsed;
                     toggleSwitch.Visibility = Visibility.Visible;
                     edited = true;
+                    resultsReady = true;
                 }
             }
             else
@@ -507,10 +516,14 @@ namespace MathModels.View
         }
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            if(toggleSwitch.IsOn && tbError.Visibility == Visibility.Collapsed && LineChart.Visibility == Visibility.Visible)
+            if (toggleSwitch.IsOn && tbError.Visibility == Visibility.Collapsed && LineChart.Visibility == Visibility.Visible)
             {
                 inkCanvas.Visibility = Visibility.Visible;
                 inkToolbar.Visibility = Visibility.Visible;
+            }
+            else if (toggleScheme.IsOn)
+            {
+                toggleSwitch.IsOn = false;
             }
             else
             {
@@ -519,9 +532,19 @@ namespace MathModels.View
                 inkCanvas.InkPresenter.StrokeContainer.Clear();
             }
         }
-
+        bool resultsReady = false;
         public async void bResult_Click(object sender, RoutedEventArgs e)
         {
+            queueCustomers = 0;
+            proceededCustomers = 0;
+            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
+            SolidColorBrush mySolidColorBrush = new SolidColorBrush();
+            mySolidColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+            for (int i = 0; i < 7; i++)
+            {
+                queue[i].Fill = mySolidColorBrush;
+            }
+            server2.Fill = mySolidColorBrush;
             tbError.Visibility = Visibility.Collapsed;
             sayText.Visibility = Visibility.Collapsed;
             bListen.IsEnabled = false;
@@ -532,7 +555,10 @@ namespace MathModels.View
             listView.Items.Clear();
             if ((HubModels.Header.ToString() == "M|M|1" || HubModels.Header.ToString() == "M|M|∞") && CheckInput1M2M())
             {
-                LineChart.Visibility = Visibility.Visible;
+                if (!toggleScheme.IsOn)
+                {
+                    LineChart.Visibility = Visibility.Visible;
+                }
                 listViewResults.Header = "P(k):";
                 if (HubModels.Header.ToString() == "M|M|1")
                 {
@@ -542,16 +568,19 @@ namespace MathModels.View
                     listView.Items.Add("L[q](avg) = " + Models.MM1.CalcLq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                     listView.Items.Add("W[q](avg) = " + Models.MM1.CalcWq_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                 }
-                else if(HubModels.Header.ToString() == "M|M|∞")
+                else if (HubModels.Header.ToString() == "M|M|∞")
                 {
                     Models.MMinf.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), listViewResults, LineChart);
                     listView.Items.Add("K(avg) = " + Models.MMinf.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                     listView.Items.Add("W[s](avg) = " + Models.MMinf.CalcWs_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text)).ToString());
                 }
             }
-             if ((HubModels.Header.ToString() == "M|M|V" || HubModels.Header.ToString() == "M|M|V|K") && CheckInput3M4M())
+            if ((HubModels.Header.ToString() == "M|M|V" || HubModels.Header.ToString() == "M|M|V|K") && CheckInput3M4M())
             {
-                LineChart.Visibility = Visibility.Visible;
+                if (!toggleScheme.IsOn)
+                {
+                    LineChart.Visibility = Visibility.Visible;
+                }
                 if (HubModels.Header.ToString() == "M|M|V")
                 {
                     listViewResults.Header = "P(i) + W(j):";
@@ -572,7 +601,10 @@ namespace MathModels.View
 
             if (HubModels.Header.ToString() == "M|M|V|K|N" && CheckInput5M())
             {
-                LineChart.Visibility = Visibility.Visible;
+                if (!toggleScheme.IsOn)
+                {
+                    LineChart.Visibility = Visibility.Visible;
+                }
                 listViewResults.Header = "P[k]";
                 Models.MMVKN.CalcPk(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text), listViewResults, LineChart);
                 listView.Items.Add("K(avg) = " + Models.MMVKN.CalcK_Avg(double.Parse(tbLambda.Text), double.Parse(tbMu.Text), int.Parse(tbV.Text), uint.Parse(tbN.Text)));
@@ -654,7 +686,7 @@ namespace MathModels.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("Something went wrong: " + ex.Message);
             }
         }
 
@@ -715,7 +747,7 @@ namespace MathModels.View
                     //SpeakAsync(speechRecognizer.UIOptions.AudiblePrompt);
                     var result = await speechRecognizer.RecognizeWithUIAsync();
 
-                    if (!string.IsNullOrWhiteSpace(result.Text) && (result.Text.ToLower() == "yes" 
+                    if (!string.IsNullOrWhiteSpace(result.Text) && (result.Text.ToLower() == "yes"
                                                                     || result.Text.ToLower() == "i'm sure"
                                                                     || result.Text.ToLower() == "i am sure"))
                     {
@@ -773,17 +805,256 @@ namespace MathModels.View
             manualResetEvent.Set();
         }
 
+        private void HideScheme()
+        {
+            customer1.Visibility = Visibility.Collapsed;
+            customer2.Visibility = Visibility.Collapsed;
+            customer3.Visibility = Visibility.Collapsed;
+            queuepart1.Visibility = Visibility.Collapsed;
+            queuepart2.Visibility = Visibility.Collapsed;
+            queuepart3.Visibility = Visibility.Collapsed;
+            queuepart4.Visibility = Visibility.Collapsed;
+            queuepart5.Visibility = Visibility.Collapsed;
+            queuepart6.Visibility = Visibility.Collapsed;
+            queuepart7.Visibility = Visibility.Collapsed;
+            server1.Visibility = Visibility.Collapsed;
+            server2.Visibility = Visibility.Collapsed;
+            server3.Visibility = Visibility.Collapsed;
+
+            customersCounter.Visibility = Visibility.Collapsed;
+            queueCounter.Visibility = Visibility.Collapsed;
+            sinkCounter.Visibility = Visibility.Collapsed;
+        }
+
         private void toggleScheme_Toggled(object sender, RoutedEventArgs e)
         {
-            if(toggleScheme.IsOn)
+            if (toggleScheme.IsOn)
             {
                 LineChart.Visibility = Visibility.Collapsed;
-                //TODO: Show scheme
+                inkCanvas.Visibility = Visibility.Collapsed;
+                inkToolbar.Visibility = Visibility.Collapsed;
+                inkCanvas.InkPresenter.StrokeContainer.Clear();
+                switch (GetNumberByModel(HubModels.Header.ToString()))
+                {
+                    case 1:
+                        customer1.Visibility = Visibility.Visible;
+                        customer2.Visibility = Visibility.Visible;
+                        customer3.Visibility = Visibility.Visible;
+                        queuepart1.Visibility = Visibility.Visible;
+                        queuepart2.Visibility = Visibility.Visible;
+                        queuepart3.Visibility = Visibility.Visible;
+                        queuepart4.Visibility = Visibility.Visible;
+                        queuepart5.Visibility = Visibility.Visible;
+                        queuepart6.Visibility = Visibility.Visible;
+                        queuepart7.Visibility = Visibility.Visible;
+                        server1.Visibility = Visibility.Collapsed;
+                        server2.Visibility = Visibility.Visible;
+                        server3.Visibility = Visibility.Collapsed;
+                        customersCounter.Visibility = Visibility.Visible;
+                        queueCounter.Visibility = Visibility.Visible;
+                        sinkCounter.Visibility = Visibility.Visible;
+                        break;
+                    case 2:
+                    case 3:
+                        customer1.Visibility = Visibility.Visible;
+                        customer2.Visibility = Visibility.Visible;
+                        customer3.Visibility = Visibility.Visible;
+                        queuepart1.Visibility = Visibility.Visible;
+                        queuepart2.Visibility = Visibility.Visible;
+                        queuepart3.Visibility = Visibility.Visible;
+                        queuepart4.Visibility = Visibility.Visible;
+                        queuepart5.Visibility = Visibility.Visible;
+                        queuepart6.Visibility = Visibility.Visible;
+                        queuepart7.Visibility = Visibility.Visible;
+                        server1.Visibility = Visibility.Visible;
+                        server2.Visibility = Visibility.Visible;
+                        server3.Visibility = Visibility.Visible;
+                        customersCounter.Visibility = Visibility.Visible;
+                        queueCounter.Visibility = Visibility.Visible;
+                        sinkCounter.Visibility = Visibility.Visible;
+                        break;
+                    case 4:
+                    case 5:
+                        customer1.Visibility = Visibility.Visible;
+                        customer2.Visibility = Visibility.Visible;
+                        customer3.Visibility = Visibility.Visible;
+                        queuepart1.Visibility = Visibility.Collapsed;
+                        queuepart2.Visibility = Visibility.Collapsed;
+                        queuepart3.Visibility = Visibility.Collapsed;
+                        queuepart4.Visibility = Visibility.Collapsed;
+                        queuepart5.Visibility = Visibility.Collapsed;
+                        queuepart6.Visibility = Visibility.Collapsed;
+                        queuepart7.Visibility = Visibility.Collapsed;
+                        server1.Margin = new Thickness(queuepart5.Margin.Left, server1.Margin.Top, 0, 0);
+                        server2.Margin = new Thickness(queuepart5.Margin.Left, server2.Margin.Top, 0, 0);
+                        server3.Margin = new Thickness(queuepart5.Margin.Left, server3.Margin.Top, 0, 0);
+                        sinkCounter.Margin = new Thickness(queuepart5.Margin.Left, sinkCounter.Margin.Top, 0, 0);
+                        server1.Visibility = Visibility.Visible;
+                        server2.Visibility = Visibility.Visible;
+                        server3.Visibility = Visibility.Visible;
+                        customersCounter.Visibility = Visibility.Visible;
+                        queueCounter.Visibility = Visibility.Collapsed;
+                        sinkCounter.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        break;
+                }
             }
             else
             {
-                LineChart.Visibility = Visibility.Visible;
-                //TODO: Hide scheme
+                if (toggleSwitch.IsOn)
+                {
+                    inkCanvas.Visibility = Visibility.Visible;
+                    inkToolbar.Visibility = Visibility.Visible;
+                }
+                if (resultsReady)
+                {
+                    LineChart.Visibility = Visibility.Visible;
+                }
+                HideScheme();
+            }
+        }
+        int c_number;
+        int queueCustomers = 0;
+        int proceededCustomers = 0;
+        //TODO: New Customer model MM1
+        private void ProcessNewCustomer1()
+        {
+            SolidColorBrush mySolidColorBrush = new SolidColorBrush();
+            Random rnd = new Random();
+            c_number = rnd.Next(0, 4);
+            customersCounter.Text = "Customers: " + c_number.ToString();
+            Debug.WriteLine(c_number);
+            if (c_number > 0)
+            {
+                mySolidColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
+                switch (c_number)
+                {
+                    case 1:
+                        var c1 = rnd.Next(1, 4);
+                        if (c1 == 1)
+                        {
+                            customer1.Fill = mySolidColorBrush;
+                        }
+                        else if(c1 == 2)
+                        {
+                            customer2.Fill = mySolidColorBrush;
+                        }
+                        else if (c1 == 3)
+                        {
+                            customer3.Fill = mySolidColorBrush;
+                        }
+                        break;
+                    case 2:
+                        var c2 = rnd.Next(1, 4);
+                        if (c2 == 1)
+                        {
+                            customer1.Fill = mySolidColorBrush;
+                            customer2.Fill = mySolidColorBrush;
+                        }
+                        else if (c2 == 2)
+                        {
+                            customer2.Fill = mySolidColorBrush;
+                            customer3.Fill = mySolidColorBrush;
+                        }
+                        else if (c2 == 3)
+                        {
+                            customer1.Fill = mySolidColorBrush;
+                            customer3.Fill = mySolidColorBrush;
+                        }
+                        break;
+                    case 3:
+                        customer1.Fill = mySolidColorBrush;
+                        customer2.Fill = mySolidColorBrush;
+                        customer3.Fill = mySolidColorBrush;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                mySolidColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+                customer1.Fill = mySolidColorBrush;
+                customer2.Fill = mySolidColorBrush;
+                customer3.Fill = mySolidColorBrush;
+            }
+        }
+        //TODO: Add in Queue model MM1
+        private void AddInQueue1()
+        {
+            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
+            SolidColorBrush sourceStateColor = new SolidColorBrush();
+            sourceStateColor.Color = Color.FromArgb(255, 0, 255, 0);
+            if (c_number > 0)
+            {
+                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
+                mySolidColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
+                for (int i = 0; i < c_number; i++)
+                {
+                    if (queueCustomers < 7)
+                    {
+                        queue[queueCustomers].Fill = mySolidColorBrush;
+                    }
+                    queueCustomers++;
+                    queueCounter.Text = "Queue: " + queueCustomers.ToString();
+                }
+            }
+        }
+        //TODO: Sink in model MM1
+        private void ProceededSink1()
+        {
+            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
+            SolidColorBrush queueBrushWrite = new SolidColorBrush();
+            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
+            if (queueCustomers > 0)
+            {
+                sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
+                queueBrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
+
+                server2.Fill = sinkBrushGreen;
+                queueCustomers--;
+                if (queueCustomers < 7)
+                {
+                    for (int i = 6; i >= queueCustomers; i--)
+                    {
+                        queue[i].Fill = queueBrushWrite;
+                    }
+                }
+                queueCounter.Text = "Queue: " + queueCustomers.ToString();
+                sinkCounter.Text = "Sink: " + (++proceededCustomers).ToString();
+            }
+            else
+            {
+                sinkBrushGreen.Color = Color.FromArgb(255, 255, 255, 255); //Write
+                server2.Fill = sinkBrushGreen;
+            }
+        }
+
+        private async void toggleScheme_Loaded(object sender, RoutedEventArgs e)
+        {
+            while (true)
+            {
+                if (resultsReady)
+                {
+                    switch (GetNumberByModel(HubModels.Header.ToString()))
+                    {
+                        case 1:
+                            ProcessNewCustomer1();
+                            AddInQueue1();
+                            ProceededSink1();
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                    }
+                }
+                await Task.Delay(500);
             }
         }
     }
