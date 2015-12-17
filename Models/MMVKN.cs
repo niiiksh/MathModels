@@ -45,15 +45,6 @@ namespace Models
             (lineChart.Series[1] as AreaSeries).Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             (lineChart.Series[1] as AreaSeries).Title = "";
         }
-        public static string CortanaCalkPk(double a, double mu, int v, uint n, uint k)
-        {
-            double znam = 0;
-            for (uint x = 0; x <= v; x++)
-            {
-                znam += Cnm(n, x) * Math.Pow(a / (1 - a), x);
-            }
-            return (Cnm(n, k) * Math.Pow(a / (1 - a), k) / znam).ToString();
-        }
         public static double CalcK_Avg(double a, double mu, int v, uint n)
         {
             double znam = 0;

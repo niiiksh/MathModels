@@ -24,7 +24,7 @@
     </Page.Resources>-->
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Hub x:Name="HubModels" Header="tempModelName" Background="Black" Foreground="White">
+        <Hub x:Name="HubModels" Loaded="HubModels_Loaded" Header="tempModelName" Background="Black" Foreground="White">
             <HubSection x:Name="HubSectionInput" Header="Input data" IsHeaderInteractive="False" Background="Black" MinWidth="250" RequestedTheme="Dark">
                 <DataTemplate>
                     <!-- Content -->
@@ -35,7 +35,7 @@
                     <!-- Content -->
                 </DataTemplate>
             </HubSection>
-            <HubSection x:Name="HubSectionGraph" Header="Chart/Scheme" IsHeaderInteractive="False" Background="#5D8AA8" MinWidth="500" RequestedTheme="Dark" HorizontalAlignment="Stretch">
+            <HubSection x:Name="HubSectionGraph" Header="Graph/Scheme" IsHeaderInteractive="False" Background="#5D8AA8" MinWidth="500" RequestedTheme="Dark" HorizontalAlignment="Stretch">
                 <DataTemplate>
                     <!-- Content -->
                 </DataTemplate>
@@ -201,7 +201,7 @@
         </Button>
         <TextBlock x:Name="sayText" HorizontalAlignment="Left" Margin="86,513,0,89" TextWrapping="Wrap" Text="Say &quot;Start listening&quot;" VerticalAlignment="Top" RequestedTheme="Dark" Height="38" Padding="0,8,0,0"/>
         <!--Scheme-->
-        <ToggleSwitch Toggled="toggleScheme_Toggled" Loaded="toggleScheme_Loaded" x:Name="toggleScheme" OnContent="" OffContent="" HorizontalAlignment="Left" Margin="513,91,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <ToggleSwitch Toggled="toggleScheme_Toggled" x:Name="toggleScheme" OnContent="" OffContent="" HorizontalAlignment="Left" Margin="513,91,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
         <!--M|M|1-->
         <Ellipse x:Name="customer1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="521,169,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="customer2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="521,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
@@ -215,20 +215,14 @@
         <Rectangle x:Name="queuepart2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="697,208,0,0"/>
         <Rectangle x:Name="queuepart1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="712,208,0,0"/>
 
-        <Ellipse x:Name="server2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <TextBlock x:Name="customersCounter" HorizontalAlignment="Left" Margin="521,140,0,0" TextWrapping="Wrap" Text="Customers: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
         <TextBlock x:Name="queueCounter" HorizontalAlignment="Left" Margin="642,140,0,0" TextWrapping="Wrap" Text="Queue: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        <TextBlock x:Name="sinkCounter" HorizontalAlignment="Left" Margin="772,140,0,0" TextWrapping="Wrap" Text="Sink: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        
+        <TextBlock x:Name="sinkCounter" HorizontalAlignment="Left" Margin="860,140,0,0" TextWrapping="Wrap" Text="Sink: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
 
-        <!--M|M|∞-->
         <Ellipse x:Name="server1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,169,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+        <Ellipse x:Name="server2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="server3" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,289,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
-        <!--M|M|V-->
-
-        <!--M|M|V|K-->
-
-        <!--M|M|V|K|N-->
-
+        <Ellipse x:Name="sink" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="860,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
+        <Slider x:Name="sliderInterval" HorizontalAlignment="Left" Margin="521,370,0,0" VerticalAlignment="Top" Width="191" Height="73" LargeChange="100" Maximum="3000" SmallChange="10" StepFrequency="50" Value="500" Header="Interval" RequestedTheme="Dark" FontSize="16"/>
     </Grid>
 </Page>

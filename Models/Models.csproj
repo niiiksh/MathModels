@@ -113,6 +113,7 @@
     <Compile Include="MMVK.cs" />
     <Compile Include="MMVKN.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="PoissonDistribution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Properties\Models.rd.xml" />
   </ItemGroup>

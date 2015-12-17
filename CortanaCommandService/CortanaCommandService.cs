@@ -37,11 +37,9 @@ namespace CortanaCommandService
                         var modelnumber = voiceCommand.Properties["modelnumber"][0];
                         double lambda = 0;
                         double mu = 0;
-                        int V = 0;
-                        uint N = 0;
                         int model = Models.Point.GetNumberByModel(Models.Point.GetModelByNumber(modelnumber));
                         
-                        if (GetAllParameters(model, voiceCommand, ref lambda, ref mu, ref V, ref N))
+                        if (GetAllParameters(model, voiceCommand, ref lambda, ref mu))
                         {
                             bool allowed = false;
                             bool unsupported = false;
@@ -67,58 +65,15 @@ namespace CortanaCommandService
                                 catch
                                 { }
                             }
-                            else if (model.Equals(3) || model.Equals(4))
+                            else if (model > 2)
                             {
-                                //var responseMessage = new VoiceCommandUserMessage()
-                                //{
-                                //    DisplayMessage = String.Format("Get likelihood results for the model {0}?", modelnumber), // with λ={1}, μ={2} and V={3}?", modelnumber, lambda, mu, V),
-                                //    SpokenMessage = String.Format("Do you want me to get likelihood results for the model {0} with these input data?", modelnumber)
-                                //};
-                                //var repeatMessage = new VoiceCommandUserMessage()
-                                //{
-                                //    DisplayMessage = String.Format("Do you still want me to get likelihood results for the model {0}?", modelnumber),
-                                //    SpokenMessage = String.Format("Do you still want me to get likelihood results for the model {0} with these input data?", modelnumber)
-                                //};
-
-                                //response = VoiceCommandResponse.CreateResponseForPrompt(responseMessage, repeatMessage);
-                                //try
-                                //{
-                                //    var confirmation = await voiceServiceConnection.RequestConfirmationAsync(response);
-                                //    allowed = confirmation.Confirmed;
-                                //}
-                                //catch
-                                //{ }
-                                unsupported = true;
-
-                            }
-                            else if (model.Equals(5))
-                            {
-                                //var responseMessage = new VoiceCommandUserMessage()
-                                //{
-                                //    DisplayMessage = String.Format("Get likelihood results for the model {0} with a={1}, μ={2}, V={3} and N={4}?", modelnumber, lambda, mu, V, N),
-                                //    SpokenMessage = String.Format("Do you want me to get likelihood results for the model {0} with these input data?", modelnumber)
-                                //};
-                                //var repeatMessage = new VoiceCommandUserMessage()
-                                //{
-                                //    DisplayMessage = String.Format("Do you still want me to get likelihood results for the model {0} with a={1}, μ={2}, V={3} and N={4}?", modelnumber, lambda, mu, V, N),
-                                //    SpokenMessage = String.Format("Do you still want me to get likelihood results for the model {0} with these input data?", modelnumber)
-                                //};
-
-                                //response = VoiceCommandResponse.CreateResponseForPrompt(responseMessage, repeatMessage);
-                                //try
-                                //{
-                                //    var confirmation = await voiceServiceConnection.RequestConfirmationAsync(response);
-                                //    allowed = confirmation.Confirmed;
-                                //}
-                                //catch
-                                //{ }
                                 unsupported = true;
                             }
 
                             if (allowed)
                             {
                                 await ShowProgressScreen("Calculating...");
-                                List<VoiceCommandContentTile> resultContentTiles = GetLikelihoodForSelectedModel(lambda, mu, V, N, model);
+                                List<VoiceCommandContentTile> resultContentTiles = GetLikelihoodForSelectedModel(lambda, mu, model);
                                 userMessage = new VoiceCommandUserMessage()
                                 {
                                     DisplayMessage = String.Format("Here is your likelihood results for the model {0}", modelnumber),
@@ -162,7 +117,6 @@ namespace CortanaCommandService
                             await voiceServiceConnection.ReportFailureAsync(response);
                         }
                         break;
-                    // As a last resort launch the app in the foreground
                     default:
                         LaunchAppInForeground();
                         break;
@@ -196,7 +150,7 @@ namespace CortanaCommandService
             VoiceCommandResponse response = VoiceCommandResponse.CreateResponse(userProgressMessage);
             await voiceServiceConnection.ReportProgressAsync(response);
         }
-        private bool GetAllParameters(int model, VoiceCommand voiceCommand, ref double Lambda, ref double Mu, ref int V, ref uint N)
+        private bool GetAllParameters(int model, VoiceCommand voiceCommand, ref double Lambda, ref double Mu)
         {
             bool valid = true;
             switch (model)
@@ -223,45 +177,8 @@ namespace CortanaCommandService
                         valid = false;
                     break;
                 case 3:
-                    //if (!double.TryParse(voiceCommand.Properties["vLambda"][0], out Lambda)
-                    //    || !double.TryParse(voiceCommand.Properties["vMu"][0], out Mu)
-                    //    || !int.TryParse(voiceCommand.Properties["vV"][0], out V))
-                    //{
-                    //    valid = false;
-                    //    break;
-                    //}
-                    //if (double.Parse(voiceCommand.Properties["vLambda"][0]) / (int.Parse(voiceCommand.Properties["vV"][0]) * double.Parse(voiceCommand.Properties["vMu"][0])) >= 1
-                    //    || double.Parse(voiceCommand.Properties["vLambda"][0]) / (int.Parse(voiceCommand.Properties["vV"][0]) * double.Parse(voiceCommand.Properties["vMu"][0])) <= 0
-                    //    || int.Parse(voiceCommand.Properties["vV"][0]) <= 0)
-                    //    valid = false;
-                    //break;
                 case 4:
-                    //if (!double.TryParse(voiceCommand.Properties["vLambda"][0], out Lambda)
-                    //    || !double.TryParse(voiceCommand.Properties["vMu"][0], out Mu)
-                    //    || !int.TryParse(voiceCommand.Properties["vV"][0], out V))
-                    //{
-                    //    valid = false;
-                    //    break;
-                    //}
-                    //if (double.Parse(voiceCommand.Properties["vLambda"][0]) / (int.Parse(voiceCommand.Properties["vV"][0]) * double.Parse(voiceCommand.Properties["vMu"][0])) >= 1
-                    //    || double.Parse(voiceCommand.Properties["vLambda"][0]) / (int.Parse(voiceCommand.Properties["vV"][0]) * double.Parse(voiceCommand.Properties["vMu"][0])) <= 0
-                    //    || int.Parse(voiceCommand.Properties["vV"][0]) <= 0)
-                    //    valid = false;
-                    //break;
                 case 5:
-                    //if (!double.TryParse(voiceCommand.Properties["vLambda"][0], out Lambda)
-                    //    || !double.TryParse(voiceCommand.Properties["vMu"][0], out Mu)
-                    //    || !int.TryParse(voiceCommand.Properties["vV"][0], out V)
-                    //    || !uint.TryParse(voiceCommand.Properties["vN"][0], out N))
-                    //{
-                    //    valid = false;
-                    //    break;
-                    //}
-                    //if (double.Parse(voiceCommand.Properties["vLambda"][0]) <= 0
-                    //    || double.Parse(voiceCommand.Properties["vLambda"][0]) >= 1
-                    //    || double.Parse(voiceCommand.Properties["vMu"][0]) <= 0
-                    //    || double.Parse(voiceCommand.Properties["vN"][0]) < double.Parse(voiceCommand.Properties["vV"][0]))
-                    //    valid = false;
                     break;
                 default:
                     valid = false;
@@ -269,7 +186,7 @@ namespace CortanaCommandService
             }
             return valid;
         }
-        private List<VoiceCommandContentTile> GetLikelihoodForSelectedModel(double Lambda,  double Mu, int V, uint N, int model)
+        private List<VoiceCommandContentTile> GetLikelihoodForSelectedModel(double Lambda,  double Mu, int model)
         {
             var resultContentTiles = new List<VoiceCommandContentTile>();
             switch (model)
@@ -293,38 +210,8 @@ namespace CortanaCommandService
                     }
                     break;
                 case 3:
-                    //for (int i = 0; i <= 4; i++)
-                    //{
-                    //    var modelTile = new VoiceCommandContentTile();
-                    //    modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                    //    modelTile.Title = Models.MMV.CortanaCalkPi(Lambda, Mu, V, i);
-                    //    resultContentTiles.Add(modelTile);
-                    //}
-                    //for (int j = 0; j <= 4; j++)
-                    //{
-                    //    var modelTile = new VoiceCommandContentTile();
-                    //    modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                    //    modelTile.Title = Models.MMV.CortanaCalkWj(Lambda, Mu, V, j);
-                    //    resultContentTiles.Add(modelTile);
-                    //}
-                    //break;
                 case 4:
-                    //for (int k = 0; k <= 9; k++)
-                    //{
-                    //    var modelTile = new VoiceCommandContentTile();
-                    //    modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                    //    modelTile.Title = Models.MMVK.CortanaCalkPk(Lambda, Mu, V, k);
-                    //    resultContentTiles.Add(modelTile);
-                    //}
-                    //break;
                 case 5:
-                    //for (uint k = 0; k <= 9; k++)
-                    //{
-                    //    var modelTile = new VoiceCommandContentTile();
-                    //    modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                    //    modelTile.Title = Models.MMVKN.CortanaCalkPk(Lambda, Mu, V, N, k);
-                    //    resultContentTiles.Add(modelTile);
-                    //}
                     break;
                 default:
                     break;

@@ -19,7 +19,6 @@
       <Example>What is a likelihood results for model 2 with lambda is 5 and mu is 8 in queueing theory</Example>
       <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} [with] lambda is {vLambda} [and] mu is {vMu} [in] </ListenFor>
       <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} [with] lambda is {vLambda} [and] mu is {vMu} [in] </ListenFor>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase" >What is [a] likelihood [results] for model {modelnumber} {anything} </ListenFor>
       <Feedback> I'm on it</Feedback>
       <VoiceCommandService Target="CortanaCommands"/>
     </Command>
@@ -44,7 +43,6 @@
     
     <PhraseTopic Label="vLambda" />
     <PhraseTopic Label="vMu" />
-    <PhraseTopic Label="anything" Scenario="Natural Language"/>
   </CommandSet>
 
 </VoiceCommands>

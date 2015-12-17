@@ -37,16 +37,6 @@ namespace Models
             (lineChart.Series[1] as AreaSeries).Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             (lineChart.Series[1] as AreaSeries).Title = "";
         }
-        public static string CortanaCalkPk(double lambda, double mu, int v, int k)
-        {
-            double znam = 0;
-            double ro = lambda / mu;
-            for (int x = 0; x <= v; x++)
-            {
-                znam += Math.Pow(ro, x) / Factorial(x);
-            }
-            return (Math.Pow(ro, k) / Factorial(k) / znam).ToString();
-        }
         public static double CalcPv(double lambda, double mu, int v)
         {
             double znam = 0;
