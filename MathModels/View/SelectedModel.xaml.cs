@@ -180,7 +180,7 @@ namespace MathModels.View
 
             manualResetEvent = new ManualResetEvent(false);
             Media.MediaEnded += Media_MediaEnded;
-            InitContiniousRecognition();
+            //InitContiniousRecognition();
 
             HubSectionGraph.MinWidth = Window.Current.Bounds.Width - 500;
             listViewResults.Height = Window.Current.Bounds.Height - 310;
@@ -894,7 +894,7 @@ namespace MathModels.View
                         queuepart5.Visibility = Visibility.Collapsed;
                         queuepart6.Visibility = Visibility.Collapsed;
                         queuepart7.Visibility = Visibility.Collapsed;
-                        sink.Margin = new Thickness(server2.Margin.Left, sink.Margin.Top, 0, 0);
+                        sink.Margin = new Thickness(queuepart5.Margin.Left + 120, sink.Margin.Top, 0, 0);
                         server1.Margin = new Thickness(queuepart5.Margin.Left, server1.Margin.Top, 0, 0);
                         server2.Margin = new Thickness(queuepart5.Margin.Left, server2.Margin.Top, 0, 0);
                         server3.Margin = new Thickness(queuepart5.Margin.Left, server3.Margin.Top, 0, 0);
@@ -1104,8 +1104,8 @@ namespace MathModels.View
                     if (queueCustomers > 0)
                     {
                         queueCustomers--;
+                        sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                     }
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                 }
             }
         }
@@ -1147,7 +1147,7 @@ namespace MathModels.View
 
                 sink.Fill = sinkBrushGreen;
                 int rndPoi = Models.PoissonDistribution.GetPoisson(double.Parse(tbMu.Text));
-                for (int i = 0; i < rndPoi; i++)
+                for (int i = 0; i < /*queueCustomers * */rndPoi; i++)
                 {
                     if (queueCustomers < 7)
                     {
@@ -1157,8 +1157,8 @@ namespace MathModels.View
                     if (queueCustomers > 0)
                     {
                         queueCustomers--;
+                        sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                     }
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                 }
             }
         }
@@ -1200,8 +1200,18 @@ namespace MathModels.View
 
                 sink.Fill = sinkBrushGreen;
                 int rndPoi = Models.PoissonDistribution.GetPoisson(double.Parse(tbMu.Text));
-                for (int i = 0; i < rndPoi; i++)
+                int k = 1;
+                if (queueCustomers >= int.Parse(tbV.Text))
+                    k = int.Parse(tbV.Text);
+                else
+                    k = queueCustomers;
+
+                for (int i = 0; i < k*rndPoi; i++)
                 {
+                    if (queueCustomers >= int.Parse(tbV.Text))
+                        k = int.Parse(tbV.Text);
+                    else
+                        k = queueCustomers;
                     if (queueCustomers < 7)
                     {
                         queue[queueCustomers].Fill = queueBrushWrite;
@@ -1210,8 +1220,8 @@ namespace MathModels.View
                     if (queueCustomers > 0)
                     {
                         queueCustomers--;
+                        sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                     }
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
                 }
             }
         }

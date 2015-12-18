@@ -223,6 +223,6 @@
         <Ellipse x:Name="server2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="server3" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,289,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="sink" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="860,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
-        <Slider x:Name="sliderInterval" HorizontalAlignment="Left" Margin="521,370,0,0" VerticalAlignment="Top" Width="191" Height="73" LargeChange="100" Maximum="3000" SmallChange="10" StepFrequency="50" Value="500" Header="Interval" RequestedTheme="Dark" FontSize="16"/>
+        <Slider x:Name="sliderInterval" HorizontalAlignment="Left" Margin="521,370,0,0" VerticalAlignment="Top" Width="191" Height="73" LargeChange="100" Maximum="3000" SmallChange="10" StepFrequency="50" Value="500" Header="Time interval" RequestedTheme="Dark" FontSize="16"/>
     </Grid>
 </Page>
