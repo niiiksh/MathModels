@@ -33,6 +33,7 @@ namespace Models
             double ro = lambda / mu;
             for (int k = 0; k <= 10; k++)
             {
+                double f = Factorial(k);
                 list.Items.Add(k + ") " + Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k));
                 chartList.Add(new Point() { x_axis = k, y_axis = Math.Pow(ro, k) * Math.Pow(Math.E, -ro) / Factorial(k) });
             }

@@ -199,10 +199,9 @@
         <Button x:Name="bListen" Click="Listen_Click" Height="45" Width="45" HorizontalAlignment="Left" VerticalAlignment="Top"  Background="#FFFD7313" Margin="26,513,0,89" Opacity="0.9">
             <SymbolIcon x:Name="mic" Symbol="Microphone" Height="45" Width="45" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"></SymbolIcon>
         </Button>
-        <TextBlock x:Name="sayText" HorizontalAlignment="Left" Margin="86,513,0,89" TextWrapping="Wrap" Text="Say &quot;Start listening&quot;" VerticalAlignment="Top" RequestedTheme="Dark" Height="38" Padding="0,8,0,0"/>
+        <TextBlock x:Name="sayText" HorizontalAlignment="Left" Margin="86,513,0,89" TextWrapping="Wrap" Text="Say &quot;Start listening&quot;  (in development)" VerticalAlignment="Top" RequestedTheme="Dark" Padding="0,8,0,0" Width="129"/>
         <!--Scheme-->
         <ToggleSwitch Toggled="toggleScheme_Toggled" x:Name="toggleScheme" OnContent="" OffContent="" HorizontalAlignment="Left" Margin="513,91,0,0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        <!--M|M|1-->
         <Ellipse x:Name="customer1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="521,169,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="customer2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="521,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="customer3" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="521,289,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
@@ -215,16 +214,16 @@
         <Rectangle x:Name="queuepart2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="697,208,0,0"/>
         <Rectangle x:Name="queuepart1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="15" Margin="712,208,0,0"/>
 
-        <TextBlock x:Name="customersCounter" HorizontalAlignment="Left" Margin="521,140,0,0" TextWrapping="Wrap" Text="Source: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        <TextBlock x:Name="queueCounter" HorizontalAlignment="Left" Margin="642,140,0,0" TextWrapping="Wrap" Text="Queue: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        <TextBlock x:Name="sinkCounter" HorizontalAlignment="Left" Margin="860,140,0,0" TextWrapping="Wrap" Text="Sink: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <TextBlock x:Name="customersCounter" HorizontalAlignment="Left" Margin="521,140,0,0" TextWrapping="Wrap" Text="Source (0)" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <TextBlock x:Name="queueCounter" HorizontalAlignment="Left" Margin="642,140,0,0" TextWrapping="Wrap" Text="Queue (0)" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <TextBlock x:Name="sinkCounter" HorizontalAlignment="Left" Margin="860,140,0,0" TextWrapping="Wrap" Text="Sink (0)" VerticalAlignment="Top" RequestedTheme="Dark"/>
 
         <Ellipse x:Name="server1" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,169,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="server2" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="server3" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="779,289,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Ellipse x:Name="sink" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="49" Margin="860,229,0,0" Stroke="Black" VerticalAlignment="Top" Width="49"/>
         <Slider x:Name="sliderInterval" HorizontalAlignment="Left" Margin="521,370,0,0" VerticalAlignment="Top" Width="191" Height="73" LargeChange="100" Maximum="4000" SmallChange="10" StepFrequency="50" Value="500" Header="Time interval" RequestedTheme="Dark" FontSize="16"/>
-        <TextBlock x:Name="service" HorizontalAlignment="Left" Margin="774,140,0,0" TextWrapping="Wrap" Text="Service: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
-        <TextBlock x:Name="lossScheme" HorizontalAlignment="Left" Margin="784,346,0,0" TextWrapping="Wrap" Text="Loss: 0" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <TextBlock x:Name="service" HorizontalAlignment="Left" Margin="774,140,0,0" TextWrapping="Wrap" Text="Service (0)" VerticalAlignment="Top" RequestedTheme="Dark"/>
+        <TextBlock x:Name="lossScheme" HorizontalAlignment="Left" Margin="784,346,0,0" TextWrapping="Wrap" Text="Loss (0)" VerticalAlignment="Top" RequestedTheme="Dark"/>
     </Grid>
 </Page>

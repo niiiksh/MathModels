@@ -27,11 +27,11 @@ namespace MathModels.View
         public  MainPage()
         {
             InitializeComponent();
+            ApplicationView.PreferredLaunchViewSize = new Size(1024, 600);
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             navigationHelper = new NavigationHelper(this);
             navigationHelper.LoadState += navigationHelper_LoadState;
             navigationHelper.SaveState += navigationHelper_SaveState;
-            ApplicationView.PreferredLaunchViewSize = new Size(1024, 600);
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             var view = ApplicationView.GetForCurrentView();
 
             view.TitleBar.BackgroundColor = Color.FromArgb(255, 253, 115, 19);

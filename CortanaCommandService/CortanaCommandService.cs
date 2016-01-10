@@ -189,32 +189,15 @@ namespace CortanaCommandService
         private List<VoiceCommandContentTile> GetLikelihoodForSelectedModel(double Lambda,  double Mu, int model)
         {
             var resultContentTiles = new List<VoiceCommandContentTile>();
-            switch (model)
+            for (int k = 0; k <= 9; k++)
             {
-                case 1:
-                    for (int k = 0; k <= 9; k++)
-                    {
-                        var modelTile = new VoiceCommandContentTile();
-                        modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                        modelTile.Title = Models.MM1.CortanaCalkPk(Lambda, Mu, k);
-                        resultContentTiles.Add(modelTile);
-                    }
-                    break;
-                case 2:
-                    for (int k = 0; k <= 9; k++)
-                    {
-                        var modelTile = new VoiceCommandContentTile();
-                        modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
-                        modelTile.Title = Models.MMinf.CortanaCalkPk(Lambda, Mu, k);
-                        resultContentTiles.Add(modelTile);
-                    }
-                    break;
-                case 3:
-                case 4:
-                case 5:
-                    break;
-                default:
-                    break;
+                var modelTile = new VoiceCommandContentTile();
+                modelTile.ContentTileType = VoiceCommandContentTileType.TitleOnly;
+                if (model == 1)
+                    modelTile.Title = Models.MM1.CortanaCalkPk(Lambda, Mu, k);
+                else if (model == 2)
+                    modelTile.Title = Models.MMinf.CortanaCalkPk(Lambda, Mu, k);
+                resultContentTiles.Add(modelTile);
             }
             return resultContentTiles;
         }

@@ -109,8 +109,8 @@ namespace MathModels.View
             {
                 // look up destination, set trip.
                 QueueVoiceCommand voiceCommand = (QueueVoiceCommand)e.NavigationParameter;
-                HubModels.Header = GetModelByNumber(voiceCommand.modelNumber);
-                SetControlsPosition(GetModelByNumber(voiceCommand.modelNumber));
+                HubModels.Header = Models.Point.GetModelByNumber(voiceCommand.modelNumber);
+                SetControlsPosition(Models.Point.GetModelByNumber(voiceCommand.modelNumber));
                 SetRandomInput();
                 bResult_Click(this, new RoutedEventArgs());
 
@@ -131,7 +131,7 @@ namespace MathModels.View
                     string[] args = arguments.Split('=');
                     if (args.Length == 2 && args[0].ToLowerInvariant() == "modelnumber")
                     {
-                        HubModels.Header = GetModelByNumber(args[1]);
+                        HubModels.Header = Models.Point.GetModelByNumber(args[1]);
                         SetControlsPosition(args[1]);
                         SetRandomInput();
                         bResult_Click(this, new RoutedEventArgs());
@@ -161,7 +161,7 @@ namespace MathModels.View
         {
         }
 
-        #region NavigationHelper registration
+        #region NavigationHelper initialization
 
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
@@ -200,56 +200,7 @@ namespace MathModels.View
 
             navigationHelper.OnNavigatedTo(e);
         }
-
-        public string GetModelByNumber(string modelnumber)
-        {
-            switch (modelnumber)
-            {
-                case "one":
-                case "1":
-                case "first":
-                    return "M|M|1";
-                case "two":
-                case "2":
-                case "second":
-                    return "M|M|∞";
-                case "three":
-                case "3":
-                case "third":
-                    return "M|M|V";
-                case "four":
-                case "4":
-                case "fourth":
-                    return "M|M|V|K";
-                case "five":
-                case "5":
-                case "fifth":
-                    return "M|M|V|K|N";
-                default:
-                    //return "Error page";
-                    return "M|M|V";
-            }
-        }
-
-        public int GetNumberByModel(string modelname)
-        {
-            switch (modelname)
-            {
-                case "M|M|1":
-                    return 1;
-                case "M|M|∞":
-                    return 2;
-                case "M|M|V":
-                    return 3;
-                case "M|M|V|K":
-                    return 4;
-                case "M|M|V|K|N":
-                    return 5;
-                default:
-                    return 0;
-            }
-        }
-
+  
         public void SetControlsPosition(string header)
         {
             tbLambda.Visibility = Visibility.Visible;
@@ -308,7 +259,7 @@ namespace MathModels.View
         {
             if (listening)
             {
-                SetListening(false, GetNumberByModel(HubModels.Header.ToString()));
+                SetListening(false, Models.Point.GetNumberByModel(HubModels.Header.ToString()));
             }
             resultsReady = false;
             tbLambda.Text = "";
@@ -320,6 +271,203 @@ namespace MathModels.View
 
         #endregion
 
+        public async Task RefreshSourceState()
+        {
+            SolidColorBrush whiteColorBrush = new SolidColorBrush();
+            whiteColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+            SolidColorBrush greenColorBrush = new SolidColorBrush();
+            greenColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
+
+            Random rnd = new Random();
+            switch (sourceScheme)
+            {
+                case 0:
+                    customer1.Fill = whiteColorBrush;
+                    customer2.Fill = whiteColorBrush;
+                    customer3.Fill = whiteColorBrush;
+                    break;
+                case 1:
+                    var c1 = rnd.Next(1, 4);
+                    if (c1 == 1)
+                    {
+                        customer1.Fill = greenColorBrush;
+                        customer2.Fill = whiteColorBrush;
+                        customer3.Fill = whiteColorBrush;
+                    }
+                    else if (c1 == 2)
+                    {
+                        customer2.Fill = greenColorBrush;
+                        customer1.Fill = whiteColorBrush;
+                        customer3.Fill = whiteColorBrush;
+                    }
+                    else if (c1 == 3)
+                    {
+                        customer3.Fill = greenColorBrush;
+                        customer1.Fill = whiteColorBrush;
+                        customer2.Fill = whiteColorBrush;
+                    }
+                    break;
+                case 2:
+                    var c2 = rnd.Next(1, 4);
+                    if (c2 == 1)
+                    {
+                        customer1.Fill = greenColorBrush;
+                        customer2.Fill = greenColorBrush;
+                        customer3.Fill = whiteColorBrush;
+                    }
+                    else if (c2 == 2)
+                    {
+                        customer2.Fill = greenColorBrush;
+                        customer3.Fill = greenColorBrush;
+                        customer1.Fill = whiteColorBrush;
+                    }
+                    else if (c2 == 3)
+                    {
+                        customer1.Fill = greenColorBrush;
+                        customer3.Fill = greenColorBrush;
+                        customer2.Fill = whiteColorBrush;
+                    }
+                    break;
+                default:
+                    customer1.Fill = greenColorBrush;
+                    customer2.Fill = greenColorBrush;
+                    customer3.Fill = greenColorBrush;
+                    break;
+            }
+            customersCounter.Text = "Source (" + sourceScheme.ToString() + ")";
+            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+        }
+        private async Task RefreshServiceState()
+        {
+            SolidColorBrush whiteColorBrush = new SolidColorBrush();
+            whiteColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+
+            SolidColorBrush greenColorBrush = new SolidColorBrush();
+            greenColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
+            Random rnd = new Random();
+            switch (inProcessServices)
+            {
+                case 0:
+                    server1.Fill = whiteColorBrush;
+                    server2.Fill = whiteColorBrush;
+                    server3.Fill = whiteColorBrush;
+                    if (Models.Point.GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queue >= 3)
+                    {
+                        server1.Fill = greenColorBrush;
+                        server2.Fill = greenColorBrush;
+                        server3.Fill = greenColorBrush;
+                    }
+                    break;
+                case 1:
+                    if (Models.Point.GetNumberByModel(HubModels.Header.ToString()).Equals(1))
+                    {
+                        server1.Fill = whiteColorBrush;
+                        server2.Fill = greenColorBrush;
+                        server3.Fill = whiteColorBrush;
+                    }
+                    else
+                    {
+                        var s1 = rnd.Next(1, 4);
+                        if (s1 == 1)
+                        {
+                            server1.Fill = greenColorBrush;
+                            server2.Fill = whiteColorBrush;
+                            server3.Fill = whiteColorBrush;
+                        }
+                        else if (s1 == 2)
+                        {
+                            server2.Fill = greenColorBrush;
+                            server1.Fill = whiteColorBrush;
+                            server3.Fill = whiteColorBrush;
+                        }
+                        else if (s1 == 3)
+                        {
+                            server3.Fill = greenColorBrush;
+                            server1.Fill = whiteColorBrush;
+                            server2.Fill = whiteColorBrush;
+                        }
+                        if (Models.Point.GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queue >= 3)
+                        {
+                            server1.Fill = greenColorBrush;
+                            server2.Fill = greenColorBrush;
+                            server3.Fill = greenColorBrush;
+                        }
+                    }
+                    break;
+                case 2:
+                    if (Models.Point.GetNumberByModel(HubModels.Header.ToString()).Equals(1))
+                    {
+                        server1.Fill = whiteColorBrush;
+                        server2.Fill = greenColorBrush;
+                        server3.Fill = whiteColorBrush;
+                    }
+                    else
+                    {
+                        var s2 = rnd.Next(1, 4);
+                        if (s2 == 1)
+                        {
+                            server1.Fill = greenColorBrush;
+                            server2.Fill = greenColorBrush;
+                            server3.Fill = whiteColorBrush;
+                        }
+                        else if (s2 == 2)
+                        {
+                            server2.Fill = greenColorBrush;
+                            server3.Fill = greenColorBrush;
+                            server1.Fill = whiteColorBrush;
+                        }
+                        else if (s2 == 3)
+                        {
+                            server1.Fill = greenColorBrush;
+                            server3.Fill = greenColorBrush;
+                            server2.Fill = whiteColorBrush;
+                        }
+                        if (Models.Point.GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queue >= 3)
+                        {
+                            server1.Fill = greenColorBrush;
+                            server2.Fill = greenColorBrush;
+                            server3.Fill = greenColorBrush;
+                        }
+                    }
+                    break;
+                default:
+                    server1.Fill = greenColorBrush;
+                    server2.Fill = greenColorBrush;
+                    server3.Fill = greenColorBrush;
+                    break;
+            }
+            service.Text = "Service (" + inProcessServices.ToString() + ")";
+            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+        }
+
+        private async Task RefreshQueue()
+        {
+            SolidColorBrush greenLight = new SolidColorBrush();
+            greenLight.Color = Color.FromArgb(255, 0, 255, 0);
+            SolidColorBrush white = new SolidColorBrush();
+            white.Color = Color.FromArgb(255, 255, 255, 255);
+            if (queue <= 7)
+            {
+                Rectangle[] queueScheme = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
+                for (int i = 0; i < 7; i++)
+                {
+                    queueScheme[i].Fill = white;
+                }
+                for (int i = 0; i < queue; i++)
+                {
+                    queueScheme[i].Fill = greenLight;
+                    await Task.Delay(50);
+                }
+                sink.Fill = greenLight;
+            }
+            else if (queue == 0)
+            {
+                sink.Fill = white;
+            }
+            queueCounter.Text = "Queue (" + queue.ToString() + ")";
+            await Task.Delay(50);
+        }
+
         public bool CheckInput1M2M()
         {
             double input;
@@ -327,7 +475,7 @@ namespace MathModels.View
             resultsReady = false;
             if (double.TryParse(tbLambda.Text, out input) && double.TryParse(tbMu.Text, out input))
             {
-                if (tbLambda.Text.ToString() == "" || tbMu.Text.ToString() == "")
+                if (tbLambda.Text == "" || tbMu.Text == "")
                 {
                     tbError.Text = "One or more required fields is empty!";
                     tbError.Visibility = Visibility.Visible;
@@ -371,7 +519,7 @@ namespace MathModels.View
             if (double.TryParse(tbLambda.Text, out input) && double.TryParse(tbMu.Text, out input)
                     && int.TryParse(tbV.Text, out intinput))
             {
-                if (tbLambda.Text.ToString() == "" || tbMu.Text.ToString() == "" || tbV.Text.ToString() == "")
+                if (tbLambda.Text == "" || tbMu.Text == "" || tbV.Text == "")
                 {
                     tbError.Text = "One or more required fields is empty!";
                     tbError.Visibility = Visibility.Visible;
@@ -420,7 +568,7 @@ namespace MathModels.View
             if (double.TryParse(tbLambda.Text, out input) && !tbLambda.Text.Contains(",") && double.TryParse(tbMu.Text, out input)
                     && int.TryParse(tbN.Text, out intinput) && int.TryParse(tbV.Text, out intinput))
             {
-                if (tbLambda.Text.ToString() == "" || tbMu.Text.ToString() == "" || tbV.Text.ToString() == "" || tbN.Text.ToString() == "")
+                if (tbLambda.Text == "" || tbMu.Text == "" || tbV.Text == "" || tbN.Text == "")
                 {
                     tbError.Text = "One or more required fields is empty!";
                     tbError.Visibility = Visibility.Visible;
@@ -540,8 +688,14 @@ namespace MathModels.View
         bool resultsReady = false;
         public async void bResult_Click(object sender, RoutedEventArgs e)
         {
-            queueCustomers = 0;
-            proceededCustomers = 0;
+            queue = 0;
+            proceeded = 0;
+            packetsCount = 0;
+            sourcePackets = 0;
+            inProcessServices = 0;
+            inProcessMax = 0;
+            lostPackets = 0;
+            lastActive = 0;
             tbError.Visibility = Visibility.Collapsed;
             sayText.Visibility = Visibility.Collapsed;
             bListen.IsEnabled = false;
@@ -618,7 +772,7 @@ namespace MathModels.View
 
         private void Listen_Click(object sender, RoutedEventArgs e)
         {
-            SetListening(!listening, GetNumberByModel(HubModels.Header.ToString()));
+            SetListening(!listening, Models.Point.GetNumberByModel(HubModels.Header.ToString()));
         }
 
         private async Task SpeakAsync(string toSpeak)
@@ -704,7 +858,7 @@ namespace MathModels.View
                 {
                     await Media.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
-                        SetListening(true, GetNumberByModel(HubModels.Header.ToString()));
+                        SetListening(true, Models.Point.GetNumberByModel(HubModels.Header.ToString()));
                     });
                 }
             }
@@ -843,7 +997,7 @@ namespace MathModels.View
                 inkToolbar.Visibility = Visibility.Collapsed;
                 inkCanvas.InkPresenter.StrokeContainer.Clear();
                 sliderInterval.Visibility = Visibility.Visible;
-                switch (GetNumberByModel(HubModels.Header.ToString()))
+                switch (Models.Point.GetNumberByModel(HubModels.Header.ToString()))
                 {
                     case 1:
                         customer1.Visibility = Visibility.Visible;
@@ -935,476 +1089,363 @@ namespace MathModels.View
                 HideScheme();
             }
         }
-        int c_number;
-        int queueCustomers = 0;
-        int proceededCustomers = 0;
-        //TODO: New Customer
-        private void ProcessNewCustomer(double Lambda)
+        int sourcePackets = 0;
+        int sourceScheme = 0;
+        int onServiceMu;
+        int inProcessServices = 0;
+        int inProcessMax = 0;
+        int lostPackets = 0;
+        int packetsCount = 0;
+        int proceeded = 0;
+        int queue = 0;
+        int lastActive = 0;
+        int[] everyServicesMu = null;
+        int sumServicesMu = 0;
+        int currentQueue = 0;
+        //TODO: New packet
+        private async Task ProcessNewPacket(double Lambda, double Mu, int V, int N)
         {
-            SolidColorBrush whiteColorBrush = new SolidColorBrush();
-            whiteColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
-            sink.Fill = whiteColorBrush;
-
-            SolidColorBrush greenColorBrush = new SolidColorBrush();
-            greenColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
-            int nMax;
-            if (GetNumberByModel(HubModels.Header.ToString()).Equals(5) && int.TryParse(tbV.Text, out nMax))
-                c_number = Models.PoissonDistribution.GetPoisson(Lambda * nMax);
-            else
-                c_number = Models.PoissonDistribution.GetPoisson(Lambda);
-            customersCounter.Text = "Source: " + c_number.ToString();
-
-            Random rnd = new Random();
-            switch (c_number)
+            switch(Models.Point.GetNumberByModel(HubModels.Header.ToString()))
             {
-                case 0:
-                    customer1.Fill = whiteColorBrush;
-                    customer2.Fill = whiteColorBrush;
-                    customer3.Fill = whiteColorBrush;
-                    break;
                 case 1:
-                    var c1 = rnd.Next(1, 4);
-                    if (c1 == 1)
-                    {
-                        customer1.Fill = greenColorBrush;
-                        customer2.Fill = whiteColorBrush;
-                        customer3.Fill = whiteColorBrush;
-                    }
-                    else if (c1 == 2)
-                    {
-                        customer2.Fill = greenColorBrush;
-                        customer1.Fill = whiteColorBrush;
-                        customer3.Fill = whiteColorBrush;
-                    }
-                    else if (c1 == 3)
-                    {
-                        customer3.Fill = greenColorBrush;
-                        customer1.Fill = whiteColorBrush;
-                        customer2.Fill = whiteColorBrush;
-                    }
+                    sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
+                    sourceScheme = sourcePackets;
+                    inProcessMax = 1;
+                    onServiceMu = Models.PoissonDistribution.GetPoisson(Mu);
                     break;
                 case 2:
-                    var c2 = rnd.Next(1, 4);
-                    if (c2 == 1)
-                    {
-                        customer1.Fill = greenColorBrush;
-                        customer2.Fill = greenColorBrush;
-                        customer3.Fill = whiteColorBrush;
-                    }
-                    else if (c2 == 2)
-                    {
-                        customer2.Fill = greenColorBrush;
-                        customer3.Fill = greenColorBrush;
-                        customer1.Fill = whiteColorBrush;
-                    }
-                    else if (c2 == 3)
-                    {
-                        customer1.Fill = greenColorBrush;
-                        customer3.Fill = greenColorBrush;
-                        customer2.Fill = whiteColorBrush;
-                    }
+                    sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
+                    sourceScheme = sourcePackets;
+                    inProcessServices = 0;
                     break;
-                default:
-                    customer1.Fill = greenColorBrush;
-                    customer2.Fill = greenColorBrush;
-                    customer3.Fill = greenColorBrush;
-                    break;
-            }
-        }
-        //TODO: Service process
-        int rndMu;
-        private void ProcessService(double Mu)
-        {
-            SolidColorBrush whiteColorBrush = new SolidColorBrush();
-            whiteColorBrush.Color = Color.FromArgb(255, 255, 255, 255);
+                case 3:
+                    sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
+                    sourceScheme = sourcePackets;
+                    await RefreshSourceState();
+                    inProcessMax = V;
+                    everyServicesMu = new int[V];
+                    if (currentQueue > 0)
+                    {
+                        sourcePackets += currentQueue;
+                        queue -= currentQueue - 1;
+                        await RefreshQueue();
+                        currentQueue = 0;
+                    }
+                    int sum3 = 0;
+                    sumServicesMu = 0;
+                    for (int i = 1; i <= V && sumServicesMu == 0; i++)
+                    {
+                        everyServicesMu[i - 1] = Models.PoissonDistribution.GetPoisson(Mu);
+                        sum3 += everyServicesMu[i - 1];
+                        if (sum3 >= sourcePackets && sourcePackets > 0)
+                        {
+                            inProcessServices = i;
+                            await RefreshServiceState();
+                            sumServicesMu = sum3;
+                        }
+                    }
+                    sumServicesMu = sum3;
+                    if (queue > sumServicesMu)
+                    {
+                        inProcessServices = inProcessMax;
+                        await RefreshServiceState();
+                    }
+                    if (sourcePackets > sumServicesMu)
+                        currentQueue = sourcePackets - sumServicesMu;
+                    else
+                        currentQueue = 0;
 
-            SolidColorBrush greenColorBrush = new SolidColorBrush();
-            greenColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
-            int serviceMax;
-            Random rnd = new Random();
-            rndMu = Models.PoissonDistribution.GetPoisson(Mu);
-            switch (rndMu)
-            {
-                case 0:
-                    server1.Fill = whiteColorBrush;
-                    server2.Fill = whiteColorBrush;
-                    server3.Fill = whiteColorBrush;
-                    if (GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queueCustomers >= 3)
-                    {
-                        server1.Fill = greenColorBrush;
-                        server2.Fill = greenColorBrush;
-                        server3.Fill = greenColorBrush;
-                    }
                     break;
-                case 1:
-                    if (GetNumberByModel(HubModels.Header.ToString()).Equals(1))
-                    {
-                        server1.Fill = whiteColorBrush;
-                        server2.Fill = greenColorBrush;
-                        server3.Fill = whiteColorBrush;
-                    }
+                case 4:
+                    sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
+                    sourceScheme = sourcePackets;
+                    inProcessServices = 0;
+                    inProcessMax = V;
+                    break;
+                case 5:
+                    sourcePackets = 0;
+                    if (lastActive != 0 && N - lastActive + 1 != 0)
+                        sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda) * (N - lastActive + 1);
                     else
-                    {
-                        var s1 = rnd.Next(1, 4);
-                        if (s1 == 1)
-                        {
-                            server1.Fill = greenColorBrush;
-                            server2.Fill = whiteColorBrush;
-                            server3.Fill = whiteColorBrush;
-                        }
-                        else if (s1 == 2)
-                        {
-                            server2.Fill = greenColorBrush;
-                            server1.Fill = whiteColorBrush;
-                            server3.Fill = whiteColorBrush;
-                        }
-                        else if (s1 == 3)
-                        {
-                            server3.Fill = greenColorBrush;
-                            server1.Fill = whiteColorBrush;
-                            server2.Fill = whiteColorBrush;
-                        }
-                        if (GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queueCustomers >= 3)
-                        {
-                            server1.Fill = greenColorBrush;
-                            server2.Fill = greenColorBrush;
-                            server3.Fill = greenColorBrush;
-                        }
-                    }
-                    break;
-                case 2:
-                    if (GetNumberByModel(HubModels.Header.ToString()).Equals(1))
-                    {
-                        server1.Fill = whiteColorBrush;
-                        server2.Fill = greenColorBrush;
-                        server3.Fill = whiteColorBrush;
-                    }
-                    else
-                    {
-                        var s2 = rnd.Next(1, 4);
-                        if (s2 == 1)
-                        {
-                            server1.Fill = greenColorBrush;
-                            server2.Fill = greenColorBrush;
-                            server3.Fill = whiteColorBrush;
-                        }
-                        else if (s2 == 2)
-                        {
-                            server2.Fill = greenColorBrush;
-                            server3.Fill = greenColorBrush;
-                            server1.Fill = whiteColorBrush;
-                        }
-                        else if (s2 == 3)
-                        {
-                            server1.Fill = greenColorBrush;
-                            server3.Fill = greenColorBrush;
-                            server2.Fill = whiteColorBrush;
-                        }
-                        if (GetNumberByModel(HubModels.Header.ToString()).Equals(3) && queueCustomers >= 3)
-                        {
-                            server1.Fill = greenColorBrush;
-                            server2.Fill = greenColorBrush;
-                            server3.Fill = greenColorBrush;
-                        }
-                    }
-                    break;
-                default:
-                    server1.Fill = greenColorBrush;
-                    server2.Fill = greenColorBrush;
-                    server3.Fill = greenColorBrush;
+                        sourcePackets = N * Models.PoissonDistribution.GetPoisson(Lambda);
+                    sourceScheme = sourcePackets;
+                    inProcessMax = V;
                     break;
             }
+            await RefreshSourceState();
         }
+        
+        
         //TODO: Add in Queue model MM1
-        private void AddInQueue1()
+        private async void AddInQueue1()
         {
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            if (c_number > 0)
+            for (int i = 0; i < sourcePackets; i++)
             {
-                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
-                mySolidColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
-                for (int i = 1; i <= c_number; i++)
+                sourceScheme--;
+                await RefreshSourceState();
+                if (inProcessServices < inProcessMax)
                 {
-                    if (queueCustomers < 7)
-                    {
-                        queue[queueCustomers].Fill = mySolidColorBrush;
-                    }
-                    queueCustomers++;
-                    queueCounter.Text = "Queue: " + queueCustomers.ToString();
-                }
-            }
-        }
-        //TODO: Sink in model MM1
-        private async void ProceededSink1()
-        {
-            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
-            SolidColorBrush queueBrushWrite = new SolidColorBrush();
-            sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
-            queueBrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            for (int i = 1; i <= rndMu; i++)
-            {
-                if (queueCustomers > 0)
-                {
-                    queueCustomers--;
-                    if (queueCustomers < 7)
-                    {
-                        queue[queueCustomers].Fill = queueBrushWrite;
-                    }
-                    queueCounter.Text = "Queue: " + queueCustomers.ToString();
-                    service.Text = "Service: 1";
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
-                    sink.Fill = sinkBrushGreen;
-                    await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-
+                    inProcessServices++;
+                    await RefreshServiceState();
                 }
                 else
                 {
-                    service.Text = "Service: 0";
-                    sink.Fill = queueBrushWrite;
+                    queue++;
+                    await RefreshQueue();
+                }
+            }
+        }
+        
+        //TODO: Sink in model MM1
+        private async void ProceededSink1()
+        {
+            for (int i = 0; i < onServiceMu; i++)
+            {
+                if (inProcessServices > 0)
+                {
+                    inProcessServices--;
+                    await RefreshServiceState();
+                    if (queue > 0)
+                    {
+                        queue--;
+                        await RefreshQueue();
+                        inProcessServices++;
+                        await RefreshServiceState();
+                    }
+                    sinkCounter.Text = "Sink (" + (proceeded++).ToString() + ")";
                 }
             }
         }
 
         //TODO: Add in Queue model MMinf
-        private void AddInQueue2()
+        private async void AddInQueue2()
         {
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            if (c_number > 0)
+            for (int i = 0; i < sourcePackets; i++)
             {
-                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
-                mySolidColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
-                for (int i = 1; i <= c_number; i++)
-                {
-                    queueCustomers++;
-                    queueCounter.Text = "Queue: 0";
-                }
+                sourceScheme--;
+                await RefreshSourceState();
+                //if (inProcessServices < inProcessMax)
+                //{
+                //    inProcessServices++;
+                //    RefreshServiceState();
+                //}
+                //else
+                //{
+                //    queue++;
+                //    RefreshQueue();
+                //}
             }
         }
 
         //TODO: Sink in model MMinf
-        private async void ProceededSink2()
+        private async void ProceededSink2(double mu)
         {
-            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
-            SolidColorBrush queueBrushWrite = new SolidColorBrush();
-            sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
-            queueBrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            for (int i = 1; i <= queueCustomers * rndMu; i++)
+            int num = 0;
+            int i = 1, j = 0;
+            int rndMu = 0;
+            rndMu = Models.PoissonDistribution.GetPoisson(mu);
+            Debug.WriteLine(rndMu);
+            for (int packet = 1; packet <= sourcePackets; packet++)
             {
-                if (queueCustomers > 0)
+                if (j == 0)
                 {
-                    queueCustomers--;
-                    if (queueCustomers < 7)
-                    {
-                        queue[queueCustomers].Fill = queueBrushWrite;
-                    }
-                    service.Text = "Service: " + queueCustomers.ToString();
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
-                    sink.Fill = sinkBrushGreen;
-                    await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
+                    if (sourcePackets != 0)
+                        inProcessServices++;
+                    j++;
                 }
                 else
                 {
-                    service.Text = "Service: 0";
-                    sink.Fill = queueBrushWrite;
+                    if (i == rndMu)
+                    {
+                        inProcessServices++;
+                        i = 0;
+                        num += rndMu;
+                        rndMu = Models.PoissonDistribution.GetPoisson(mu);
+                        Debug.WriteLine(rndMu);
+                        j++;
+                    }
+                    i++;
                 }
             }
+            await RefreshServiceState();
+            await RefreshQueue();
+            sinkCounter.Text = "Sink (" + (proceeded += num).ToString() + ")";
         }
 
         //TODO: Add in Queue model MMV
-        private void AddInQueue3()
+        private async Task AddInQueue3()
         {
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            if (c_number > 0)
+            for (int i = 0; i < currentQueue; i++)
             {
-                SolidColorBrush mySolidColorBrush = new SolidColorBrush();
-                mySolidColorBrush.Color = Color.FromArgb(255, 0, 255, 0);
-                for (int i = 1; i <= c_number; i++)
+                if (sourceScheme > 0)
                 {
-                    if (queueCustomers < 7)
-                    {
-                        queue[queueCustomers].Fill = mySolidColorBrush;
-                    }
-                    queueCustomers++;
-                    queueCounter.Text = "Queue: " + queueCustomers.ToString();
+                    sourceScheme--;
+                    await RefreshSourceState();
                 }
+                queue++;
+                await RefreshQueue();
             }
         }
 
         //TODO: Sink in model MMV
-        private async void ProceededSink3(int V)
+        private async Task ProceededSink3(double mu)
         {
-            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
-            SolidColorBrush queueBrushWrite = new SolidColorBrush();
-            sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
-            queueBrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
-            Rectangle[] queue = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
-            int k;
-            if (queueCustomers > V)
-                k = V;
-            else
-                k = queueCustomers;
-            
-            for (int i = 0; i < k * rndMu; i++)
-            {
-                if (queueCustomers > 0)
-                {
-                    queueCustomers--;
-                    if (queueCustomers < 7)
-                    {
-                        queue[queueCustomers].Fill = queueBrushWrite;
-                    }
-                    k = queueCustomers;
-                    queueCounter.Text = "Queue: " + queueCustomers.ToString();
-                    service.Text = "Service: " + k.ToString();
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
-                    sink.Fill = sinkBrushGreen;
-                    await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                }
-                else
-                {
-                    service.Text = "Service: 0";
-                    sink.Fill = queueBrushWrite;
-                }
-            }
+            sinkCounter.Text = "Sink (" + (proceeded += sumServicesMu).ToString() + ")";
+            inProcessServices = 0;
+            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
         }
 
         //TODO: Sink in model MMVK
-        int loss = 0;
-        private async void ProceededSink4(int V)
+        private async void ProceededSink4(int packets, double mu)
         {
-            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
-            SolidColorBrush BrushWrite = new SolidColorBrush();
-            BrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
-            sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
-
-            int k;
-            if (c_number > V)
+            List<int> arr = new List<int>();
+            int num = 0;
+            for (var k = 0; k < inProcessMax; k++)
             {
-                loss += c_number - V;
-                k = V;
-                lossScheme.Text = "Loss: " + loss.ToString();
+                var num1 = Models.PoissonDistribution.GetPoisson(mu);
+                arr.Add(num1);
+                num += num1;
             }
-            else
-                k = c_number;
-            for (int i = 0; i < k * rndMu; i++)
+            int i = 1, j = 0;
+            for (var packet = 1; packet <= packets; packet++)
             {
-                if (c_number > 0)
+                var busyServices = inProcessServices;
+                if (j == 0)
                 {
-                    k--;
-                    lossScheme.Text = "Loss: " + loss.ToString();
-                    service.Text = "Service: " + k.ToString();
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
-                    sink.Fill = sinkBrushGreen;
-                    await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
+                    if (packets != 0)
+                        inProcessServices++;
+                    j++;
                 }
                 else
                 {
-                    service.Text = "Service: 0";
-                    sink.Fill = BrushWrite;
+                    if (j < arr.Count && i == arr[j])
+                    {
+                        if (busyServices < inProcessMax)
+                            inProcessServices++;
+                        i = 0;
+                        j++;
+                    }
+                    i++;
                 }
             }
+            await RefreshServiceState();
+
+            packetsCount += packets;
+            if (packets < num)
+                proceeded += packets;
+            else
+                proceeded += num;
+
+            if (inProcessServices == inProcessMax)
+            {
+                lostPackets = packetsCount - proceeded;
+            }
+            lossScheme.Text = "Loss (" + lostPackets.ToString() + ")";
+            sinkCounter.Text = "Sink (" + packetsCount.ToString() + ")";
         }
 
         //TODO: Sink in model MMVKN
-        private async void ProceededSink5(int V)
+        private async void ProceededSink5(int packets, double mu)
         {
-            SolidColorBrush sinkBrushGreen = new SolidColorBrush();
-            SolidColorBrush BrushWrite = new SolidColorBrush();
-            BrushWrite.Color = Color.FromArgb(255, 255, 255, 255);
-            sinkBrushGreen.Color = Color.FromArgb(255, 0, 255, 0);
-            int k;
-            if (c_number > V)
+            List<int> arr = new List<int>();
+            int num = 0;
+            int i, j;
+            for (i = 0; i < inProcessMax; i++)
             {
-                loss += c_number - V;
-                k = V;
-                lossScheme.Text = "Loss: " + loss.ToString();
+                var num1 = Models.PoissonDistribution.GetPoisson(mu);
+                arr.Add(num1);
+                num += num1;
             }
-            else
-                k = c_number;
-            for (int i = 0; i < k * rndMu; i++)
+            i = 1;
+            j = 0;
+            for (var packet = 1; packet <= packets; packet++)
             {
-                if (c_number > 0)
+                var busyServices = inProcessServices;
+                if (j == 0)
                 {
-                    k--;
-                    lossScheme.Text = "Loss: " + loss.ToString();
-                    service.Text = "Service: " + k.ToString();
-                    sinkCounter.Text = "Sink: " + (proceededCustomers++).ToString();
-                    sink.Fill = sinkBrushGreen;
-                    await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
+                    if (packets != 0)
+                        inProcessServices++;
+                    j++;
                 }
                 else
                 {
-                    service.Text = "Service: 0";
-                    sink.Fill = BrushWrite;
+                    if (j > 19)
+                        j = 19;
+                    if (inProcessServices < inProcessMax && i == arr[j])
+                    {
+                        if (busyServices < inProcessMax)
+                            inProcessServices++;
+                        i = 0;
+                        j++;
+                    }
+                    i++;
                 }
             }
+            await RefreshServiceState();
+
+            packetsCount += packets;
+            if (packets < num)
+                proceeded += packets;
+            else
+                proceeded += num;
+
+
+            lostPackets = packetsCount - proceeded;
+            Debug.WriteLine(lostPackets);
+            lastActive = inProcessServices;
+            lossScheme.Text = "Loss (" + lostPackets.ToString() + ")";
+            sinkCounter.Text = "Sink (" + packetsCount.ToString() + ")";
+            inProcessServices = 0;
         }
         bool stopScheme = false;
         private async void HubModels_Loaded(object sender, RoutedEventArgs e)
         {
-            double inValue;
-            int serviceMax;
+            double inLambda = 0, inMu = 0;
+            int serviceMax = 0;
+            int N = 0;
             while (true)
             {
                 if (resultsReady && !stopScheme)
                 {
-                    switch (GetNumberByModel(HubModels.Header.ToString()))
+                    switch (Models.Point.GetNumberByModel(HubModels.Header.ToString()))
                     {
                         case 1:
-                            if (double.TryParse(tbLambda.Text, out inValue))
-                                ProcessNewCustomer(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
+                            if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu))
+                                await ProcessNewPacket(inLambda, inMu, serviceMax, N);
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
                             AddInQueue1();
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            if (double.TryParse(tbMu.Text, out inValue))
-                                ProcessService(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
                             ProceededSink1();
                             break;
                         case 2:
-                            if (double.TryParse(tbLambda.Text, out inValue))
-                                ProcessNewCustomer(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
+                            if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu))
+                                await ProcessNewPacket(inLambda, inMu, serviceMax, N);
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
                             AddInQueue2();
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            if (double.TryParse(tbMu.Text, out inValue))
-                                ProcessService(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            ProceededSink2();
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+                            if (double.TryParse(tbMu.Text, out inMu))
+                                ProceededSink2(inMu);
                             break;
                         case 3:
-                            if (double.TryParse(tbLambda.Text, out inValue))
-                                ProcessNewCustomer(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            AddInQueue3();
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            if (double.TryParse(tbMu.Text, out inValue))
-                                ProcessService(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 4));
-                            if (int.TryParse(tbV.Text, out serviceMax))
-                                ProceededSink3(serviceMax);
+                            if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu) && int.TryParse(tbV.Text, out serviceMax))
+                                await ProcessNewPacket(inLambda, inMu, serviceMax, N);
+                            await AddInQueue3();
+                            if (double.TryParse(tbMu.Text, out inMu))
+                                await ProceededSink3(inMu);
                             break;
                         case 4:
-                            if (double.TryParse(tbLambda.Text, out inValue))
-                                ProcessNewCustomer(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
-                            if (double.TryParse(tbMu.Text, out inValue))
-                                ProcessService(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
-                            if (int.TryParse(tbV.Text, out serviceMax))
-                                ProceededSink4(serviceMax);
+                            if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu) && int.TryParse(tbV.Text, out serviceMax))
+                                await ProcessNewPacket(inLambda, inMu, serviceMax, N);
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+                            if (double.TryParse(tbMu.Text, out inMu))
+                                ProceededSink4(sourcePackets, inMu);
                             break;
                         case 5:
-                            if (double.TryParse(tbLambda.Text, out inValue))
-                                ProcessNewCustomer(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
-                            if (double.TryParse(tbMu.Text, out inValue))
-                                ProcessService(inValue);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value / 3));
-                            if (int.TryParse(tbV.Text, out serviceMax))
-                                ProceededSink5(serviceMax);
+                            if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu) && int.TryParse(tbV.Text, out serviceMax) && int.TryParse(tbN.Text, out N))
+                                await ProcessNewPacket(inLambda, inMu, serviceMax, N);
+                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+                            if (double.TryParse(tbMu.Text, out inMu))
+                                ProceededSink5(sourcePackets, inMu);
                             break;
                     }
                 }
