@@ -1127,7 +1127,7 @@ namespace MathModels.View
                     if (currentQueue > 0)
                     {
                         sourcePackets += currentQueue;
-                        queue -= currentQueue - 1;
+                        queue -= currentQueue;
                         await RefreshQueue();
                         currentQueue = 0;
                     }
@@ -1369,8 +1369,8 @@ namespace MathModels.View
                 }
                 else
                 {
-                    if (j > 19)
-                        j = 19;
+                    //if (j > 19)
+                    //    j = 19;
                     if (inProcessServices < inProcessMax && i == arr[j])
                     {
                         if (busyServices < inProcessMax)
@@ -1391,7 +1391,6 @@ namespace MathModels.View
 
 
             lostPackets = packetsCount - proceeded;
-            Debug.WriteLine(lostPackets);
             lastActive = inProcessServices;
             lossScheme.Text = "Loss (" + lostPackets.ToString() + ")";
             sinkCounter.Text = "Sink (" + packetsCount.ToString() + ")";
