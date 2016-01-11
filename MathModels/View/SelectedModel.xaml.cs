@@ -335,7 +335,7 @@ namespace MathModels.View
                     break;
             }
             customersCounter.Text = "Source (" + sourceScheme.ToString() + ")";
-            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+            await Task.Delay(10);
         }
         private async Task RefreshServiceState()
         {
@@ -437,7 +437,7 @@ namespace MathModels.View
                     break;
             }
             service.Text = "Service (" + inProcessServices.ToString() + ")";
-            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
+            await Task.Delay(10);
         }
 
         private async Task RefreshQueue()
@@ -456,7 +456,7 @@ namespace MathModels.View
                 for (int i = 0; i < queue; i++)
                 {
                     queueScheme[i].Fill = greenLight;
-                    await Task.Delay(50);
+                    await Task.Delay(10);
                 }
                 sink.Fill = greenLight;
             }
@@ -465,7 +465,7 @@ namespace MathModels.View
                 sink.Fill = white;
             }
             queueCounter.Text = "Queue (" + queue.ToString() + ")";
-            await Task.Delay(50);
+            await Task.Delay(10);
         }
 
         public bool CheckInput1M2M()
@@ -1102,6 +1102,8 @@ namespace MathModels.View
         int[] everyServicesMu = null;
         int sumServicesMu = 0;
         int currentQueue = 0;
+        bool first = true;
+        int tempNeededServices = 0;
         //TODO: New packet
         private async Task ProcessNewPacket(double Lambda, double Mu, int V, int N)
         {
@@ -1123,14 +1125,20 @@ namespace MathModels.View
                     sourceScheme = sourcePackets;
                     await RefreshSourceState();
                     inProcessMax = V;
-                    everyServicesMu = new int[V];
+                    if (first)
+                    {
+                        everyServicesMu = new int[V];
+                        first = false;
+                    }
                     if (currentQueue > 0)
                     {
                         sourcePackets += currentQueue;
                         queue -= currentQueue;
                         await RefreshQueue();
+                        tempNeededServices = currentQueue;
                         currentQueue = 0;
                     }
+                    else { tempNeededServices = 0; }
                     int sum3 = 0;
                     sumServicesMu = 0;
                     for (int i = 1; i <= V && sumServicesMu == 0; i++)
@@ -1144,11 +1152,11 @@ namespace MathModels.View
                             sumServicesMu = sum3;
                         }
                     }
-                    sumServicesMu = sum3;
-                    if (queue > sumServicesMu)
+                    if (sumServicesMu == 0)
                     {
-                        inProcessServices = inProcessMax;
+                        inProcessServices = V;
                         await RefreshServiceState();
+                        sumServicesMu = sum3;
                     }
                     if (sourcePackets > sumServicesMu)
                         currentQueue = sourcePackets - sumServicesMu;
