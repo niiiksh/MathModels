@@ -1103,7 +1103,6 @@ namespace MathModels.View
         int sumServicesMu = 0;
         int currentQueue = 0;
         bool first = true;
-        int tempNeededServices = 0;
         //TODO: New packet
         private async Task ProcessNewPacket(double Lambda, double Mu, int V, int N)
         {
@@ -1124,9 +1123,10 @@ namespace MathModels.View
                     sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
                     sourceScheme = sourcePackets;
                     await RefreshSourceState();
-                    inProcessMax = V;
+                    
                     if (first)
                     {
+                        inProcessMax = V;
                         everyServicesMu = new int[V];
                         first = false;
                     }
@@ -1135,10 +1135,8 @@ namespace MathModels.View
                         sourcePackets += currentQueue;
                         queue -= currentQueue;
                         await RefreshQueue();
-                        tempNeededServices = currentQueue;
                         currentQueue = 0;
                     }
-                    else { tempNeededServices = 0; }
                     int sum3 = 0;
                     sumServicesMu = 0;
                     for (int i = 1; i <= V && sumServicesMu == 0; i++)
@@ -1283,13 +1281,13 @@ namespace MathModels.View
         //TODO: Add in Queue model MMV
         private async Task AddInQueue3()
         {
+            while (sourceScheme > 0)
+            {
+                sourceScheme--;
+                await RefreshSourceState();
+            }
             for (int i = 0; i < currentQueue; i++)
             {
-                if (sourceScheme > 0)
-                {
-                    sourceScheme--;
-                    await RefreshSourceState();
-                }
                 queue++;
                 await RefreshQueue();
             }
