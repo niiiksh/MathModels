@@ -446,9 +446,9 @@ namespace MathModels.View
             greenLight.Color = Color.FromArgb(255, 0, 255, 0);
             SolidColorBrush white = new SolidColorBrush();
             white.Color = Color.FromArgb(255, 255, 255, 255);
+            Rectangle[] queueScheme = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
             if (queue <= 7)
             {
-                Rectangle[] queueScheme = { queuepart1, queuepart2, queuepart3, queuepart4, queuepart5, queuepart6, queuepart7 };
                 for (int i = 0; i < 7; i++)
                 {
                     queueScheme[i].Fill = white;
@@ -456,16 +456,31 @@ namespace MathModels.View
                 for (int i = 0; i < queue; i++)
                 {
                     queueScheme[i].Fill = greenLight;
-                    await Task.Delay(10);
+                    queueCounter.Text = "Queue (" + i.ToString() + ")";
+                    await Task.Delay(50);
                 }
                 sink.Fill = greenLight;
             }
             else if (queue == 0)
             {
+                for (int i = 0; i < 7; i++)
+                {
+                    queueScheme[i].Fill = white;
+                }
                 sink.Fill = white;
             }
+            else
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    queueScheme[i].Fill = greenLight;
+                    queueCounter.Text = "Queue (" + i.ToString() + ")";
+                    await Task.Delay(50);
+                }
+                sink.Fill = greenLight;
+            }
             queueCounter.Text = "Queue (" + queue.ToString() + ")";
-            await Task.Delay(10);
+            await Task.Delay(50);
         }
 
         public bool CheckInput1M2M()
@@ -1091,7 +1106,7 @@ namespace MathModels.View
         }
         int sourcePackets = 0;
         int sourceScheme = 0;
-        int onServiceMu;
+        int onServiceMu = 0;
         int inProcessServices = 0;
         int inProcessMax = 0;
         int lostPackets = 0;
@@ -1103,6 +1118,7 @@ namespace MathModels.View
         int sumServicesMu = 0;
         int currentQueue = 0;
         bool first = true;
+        bool isQueueEmpty = false;
         //TODO: New packet
         private async Task ProcessNewPacket(double Lambda, double Mu, int V, int N)
         {
@@ -1111,8 +1127,25 @@ namespace MathModels.View
                 case 1:
                     sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
                     sourceScheme = sourcePackets;
+                    await RefreshSourceState();
                     inProcessMax = 1;
                     onServiceMu = Models.PoissonDistribution.GetPoisson(Mu);
+
+                    if (currentQueue > 0)
+                    {
+                        sourcePackets += currentQueue;
+                        queue -= currentQueue;
+                        await RefreshQueue();
+                        currentQueue = 0;
+                        first = true;
+                    }
+                    else
+                        first = false;
+                    while (sourceScheme > 0)
+                    {
+                        sourceScheme--;
+                        await RefreshSourceState();
+                    }
                     break;
                 case 2:
                     sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
@@ -1143,7 +1176,7 @@ namespace MathModels.View
                     {
                         everyServicesMu[i - 1] = Models.PoissonDistribution.GetPoisson(Mu);
                         sum3 += everyServicesMu[i - 1];
-                        if (sum3 >= sourcePackets && sourcePackets > 0)
+                        if (sum3 >= sourcePackets)
                         {
                             inProcessServices = i;
                             await RefreshServiceState();
@@ -1156,11 +1189,11 @@ namespace MathModels.View
                         await RefreshServiceState();
                         sumServicesMu = sum3;
                     }
-                    if (sourcePackets > sumServicesMu)
-                        currentQueue = sourcePackets - sumServicesMu;
-                    else
-                        currentQueue = 0;
-
+                    while (sourceScheme > 0)
+                    {
+                        sourceScheme--;
+                        await RefreshSourceState();
+                    }
                     break;
                 case 4:
                     sourcePackets = Models.PoissonDistribution.GetPoisson(Lambda);
@@ -1183,44 +1216,42 @@ namespace MathModels.View
         
         
         //TODO: Add in Queue model MM1
-        private async void AddInQueue1()
+        private async Task AddInQueue1()
         {
-            for (int i = 0; i < sourcePackets; i++)
+            if (sourcePackets > onServiceMu)
             {
-                sourceScheme--;
-                await RefreshSourceState();
-                if (inProcessServices < inProcessMax)
-                {
-                    inProcessServices++;
-                    await RefreshServiceState();
-                }
-                else
-                {
-                    queue++;
-                    await RefreshQueue();
-                }
+                isQueueEmpty = false;
+                currentQueue = sourcePackets - onServiceMu;
+                inProcessServices = 1;
+                await RefreshServiceState();
+            }
+            else if (sourcePackets == 0)
+            {
+                isQueueEmpty = true;
+                inProcessServices = 0;
+                await RefreshServiceState();
+            }
+            else
+            {
+                isQueueEmpty = true;
+                currentQueue = 0;
+                queue = 0;
+                await RefreshQueue();
+                inProcessServices = 1;
+                await RefreshServiceState();
+            }
+            if (!isQueueEmpty)
+            {
+                queue += currentQueue;
+                await RefreshQueue();
             }
         }
-        
+
         //TODO: Sink in model MM1
-        private async void ProceededSink1()
+        private async Task ProceededSink1()
         {
-            for (int i = 0; i < onServiceMu; i++)
-            {
-                if (inProcessServices > 0)
-                {
-                    inProcessServices--;
-                    await RefreshServiceState();
-                    if (queue > 0)
-                    {
-                        queue--;
-                        await RefreshQueue();
-                        inProcessServices++;
-                        await RefreshServiceState();
-                    }
-                    sinkCounter.Text = "Sink (" + (proceeded++).ToString() + ")";
-                }
-            }
+            sinkCounter.Text = "Sink (" + (proceeded += onServiceMu).ToString() + ")";
+            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
         }
 
         //TODO: Add in Queue model MMinf
@@ -1281,16 +1312,26 @@ namespace MathModels.View
         //TODO: Add in Queue model MMV
         private async Task AddInQueue3()
         {
-            while (sourceScheme > 0)
+            if (sourcePackets > sumServicesMu)
             {
-                sourceScheme--;
-                await RefreshSourceState();
+                isQueueEmpty = false;
+                currentQueue = sourcePackets - sumServicesMu;
             }
-            for (int i = 0; i < currentQueue; i++)
+            else if (sourcePackets == 0)
             {
-                queue++;
+                isQueueEmpty = true;
+                inProcessServices = 0;
+                await RefreshServiceState();
+            }
+            else
+            {
+                isQueueEmpty = true;
+                currentQueue = 0;
+                queue = 0;
                 await RefreshQueue();
             }
+            queue += currentQueue;
+            await RefreshQueue();
         }
 
         //TODO: Sink in model MMV
@@ -1298,6 +1339,7 @@ namespace MathModels.View
         {
             sinkCounter.Text = "Sink (" + (proceeded += sumServicesMu).ToString() + ")";
             inProcessServices = 0;
+            await RefreshServiceState();
             await Task.Delay(Convert.ToInt32(sliderInterval.Value));
         }
 
@@ -1417,10 +1459,8 @@ namespace MathModels.View
                         case 1:
                             if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu))
                                 await ProcessNewPacket(inLambda, inMu, serviceMax, N);
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
-                            AddInQueue1();
-                            await Task.Delay(Convert.ToInt32(sliderInterval.Value));
-                            ProceededSink1();
+                            await AddInQueue1();
+                            await ProceededSink1();
                             break;
                         case 2:
                             if (double.TryParse(tbLambda.Text, out inLambda) && double.TryParse(tbMu.Text, out inMu))
