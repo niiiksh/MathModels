@@ -1214,8 +1214,6 @@ namespace MathModels.View
             await RefreshSourceState();
         }
         
-        
-        //TODO: Add in Queue model MM1
         private async Task AddInQueue1()
         {
             if (sourcePackets > onServiceMu)
@@ -1246,8 +1244,7 @@ namespace MathModels.View
                 await RefreshQueue();
             }
         }
-
-        //TODO: Sink in model MM1
+        
         private async Task ProceededSink1()
         {
             sinkCounter.Text = "Sink (" + (proceeded += onServiceMu).ToString() + ")";
@@ -1257,20 +1254,10 @@ namespace MathModels.View
         //TODO: Add in Queue model MMinf
         private async void AddInQueue2()
         {
-            for (int i = 0; i < sourcePackets; i++)
+            while (sourceScheme > 0)
             {
                 sourceScheme--;
                 await RefreshSourceState();
-                //if (inProcessServices < inProcessMax)
-                //{
-                //    inProcessServices++;
-                //    RefreshServiceState();
-                //}
-                //else
-                //{
-                //    queue++;
-                //    RefreshQueue();
-                //}
             }
         }
 
@@ -1308,8 +1295,7 @@ namespace MathModels.View
             await RefreshQueue();
             sinkCounter.Text = "Sink (" + (proceeded += num).ToString() + ")";
         }
-
-        //TODO: Add in Queue model MMV
+        
         private async Task AddInQueue3()
         {
             if (sourcePackets > sumServicesMu)
@@ -1333,8 +1319,7 @@ namespace MathModels.View
             queue += currentQueue;
             await RefreshQueue();
         }
-
-        //TODO: Sink in model MMV
+        
         private async Task ProceededSink3(double mu)
         {
             sinkCounter.Text = "Sink (" + (proceeded += sumServicesMu).ToString() + ")";
@@ -1417,8 +1402,6 @@ namespace MathModels.View
                 }
                 else
                 {
-                    //if (j > 19)
-                    //    j = 19;
                     if (inProcessServices < inProcessMax && i == arr[j])
                     {
                         if (busyServices < inProcessMax)

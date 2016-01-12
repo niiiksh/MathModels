@@ -42,9 +42,9 @@
             </HubSection>
         </Hub>
         <TextBox x:Name="tbLambda" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,126,0,0" Width="231" InputScope="Number" Header="Enter λ" Foreground="White" RequestedTheme="Dark" PlaceholderText="0&lt;λ/μ≤1"/>
-        <TextBox x:Name="tbMu" HorizontalAlignment="Left" Margin="10,191,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text="2"  InputScope="Number" Header="Enter μ" RequestedTheme="Dark" PlaceholderText="0&lt;λ/μ≤1"/>
-        <TextBox x:Name="tbV" HorizontalAlignment="Left" Margin="10,256,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text="21" InputScope="Number" Header="Enter V" RequestedTheme="Dark"/>
-        <TextBox x:Name="tbN" HorizontalAlignment="Left" Margin="10,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text="30" InputScope="Number" Header="Enter N" RequestedTheme="Dark"/>
+        <TextBox x:Name="tbMu" HorizontalAlignment="Left" Margin="10,191,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text=""  InputScope="Number" Header="Enter μ" RequestedTheme="Dark" PlaceholderText="0&lt;λ/μ≤1"/>
+        <TextBox x:Name="tbV" HorizontalAlignment="Left" Margin="10,256,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text="" InputScope="Number" Header="Enter V" RequestedTheme="Dark"/>
+        <TextBox x:Name="tbN" HorizontalAlignment="Left" Margin="10,321,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Text="" InputScope="Number" Header="Enter N" RequestedTheme="Dark" PlaceholderText="V≤N"/>
         <Button x:Name="bResult" Content="CALC" HorizontalAlignment="Left" Margin="26,405,0,0" VerticalAlignment="Top" RequestedTheme="Dark" Width="199" Background="#FFFD7313" FontSize="18.667" FontWeight="SemiBold" Click="bResult_Click" Opacity="0.9"/>
         <TextBlock x:Name="tbError" HorizontalAlignment="Left" Margin="26,462,0,0" TextWrapping="Wrap" Text="tempErrorText" VerticalAlignment="Top" Foreground="Red" FontSize="21.333" TextAlignment="Center" MaxLines="3" MaxWidth="245" LineHeight="14.667"/>
         <ListView x:Name="listViewResults" HorizontalAlignment="Left" Height="364" Margin="264,126,0,0" VerticalAlignment="Top" Width="236" SelectionMode="Extended" Foreground="White" Padding="1,1,0,0" RequestedTheme="Dark">
