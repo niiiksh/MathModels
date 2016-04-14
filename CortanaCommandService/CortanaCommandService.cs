@@ -65,7 +65,7 @@ namespace CortanaCommandService
                                 catch
                                 { }
                             }
-                            else if (model > 2)
+                            else
                             {
                                 unsupported = true;
                             }

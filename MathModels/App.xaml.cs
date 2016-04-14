@@ -56,6 +56,11 @@ namespace MathModels
                 Window.Current.Content = rootFrame;
             }
 
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().HideAsync();
+            }
+
             if (rootFrame.Content == null)
             {
                 // Determine if we're being activated normally, or with arguments from Cortana.

@@ -2,15 +2,16 @@
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
   <CommandSet xml:lang="en-us" Name="CommandSet_en-us">
     <AppName>Queueing Theory</AppName>
-    <Example>Show me the graph for queueing theory model five</Example>
+    <Example>Show me a graph for queueing theory model five</Example>
 
     <Command Name="showGraph">
       <Example> Show me the random graph for queueing theory model three</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [random] graph for [the] model {modelnumber} [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
+      <ListenFor RequireAppName="BeforePhrase"> show [me] [a] [the] [random] graph for [the] model {modelnumber}</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [a] [random] graph for [the] model {modelnumber} [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [a] [random] graph for [the] {builtin:AppName} model {modelnumber}</ListenFor>
       
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [random] graph for [the] {modelnumber} model [in]</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [random] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> show [me] [the] [a] [random] graph for [the] {modelnumber} model [in]</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> Show [me] [the] [a] [random] graph for [the] {modelnumber} {builtin:AppName} model</ListenFor>
       <Feedback>Drawing graph for model {modelnumber}</Feedback>
       <Navigate/>
     </Command>

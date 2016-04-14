@@ -1,0 +1,2 @@
+MainPackage=C:\Users\Nikita\OneDrive\Документы\Visual Studio 2015\Projects\MathModels\MathModels\bin\x86\Release\MathModels_1.2.1.0_x86.appx
+SymbolPackage=C:\Users\Nikita\OneDrive\Документы\Visual Studio 2015\Projects\MathModels\MathModels\AppPackages\MathModels_1.2.1.0_Test\MathModels_1.2.1.0_x86.appxsym

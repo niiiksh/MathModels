@@ -5,18 +5,77 @@
     xmlns:local="using:MathModels.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:MathModels.View"
     mc:Ignorable="d">
     <!--{ThemeResource SystemAccentColor}-->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="VisualStateMin500">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="VisualStateMin0">
+                    <VisualState.Setters>
+                        <Setter Target="textBlock.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>82,83,84,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="textBlock.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel1.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel1.(FrameworkElement.Width)" Value="NaN"/>
+                        <Setter Target="bModel1.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>88,172,91,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="bModel2.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel2.(FrameworkElement.Width)" Value="NaN"/>
+                        <Setter Target="bModel2.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>88,225,91,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="bModel3.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel3.(FrameworkElement.Width)" Value="NaN"/>
+                        <Setter Target="bModel3.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>88,278,91,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="bModel4.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel4.(FrameworkElement.Width)" Value="NaN"/>
+                        <Setter Target="bModel4.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>88,331,91,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="bModel5.(FrameworkElement.HorizontalAlignment)" Value="Stretch"/>
+                        <Setter Target="bModel5.(FrameworkElement.Width)" Value="NaN"/>
+                        <Setter Target="bModel5.(FrameworkElement.Margin)">
+                            <Setter.Value>
+                                <Thickness>88,384,91,0</Thickness>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Target="textBlock.(FrameworkElement.Width)" Value="NaN"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="imageMain" HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="1024" Source="/Assets/MainPage.jpg" Canvas.ZIndex="-1" Stretch="Fill"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="294,83,0,0" TextWrapping="Wrap" Text="Queueing Theory Calculator" VerticalAlignment="Top" Foreground="#E5FD7313" Opacity="0.9" FontSize="32" FontFamily="Segoe UI Semibold" MaxLines="3" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="False" IsRightTapEnabled="False" Canvas.ZIndex="5"/>
-        <Button x:Name="bModel1" Content="M|M|1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,157,0,0" Width="181" Click="bModel1_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
-        <Button x:Name="bModel2" Content="M|M|∞" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,210,0,0" Width="181" Click="bModel2_Click" Foreground="Black" Background="#FFFD7313" Opacity="0.9"/>
-        <Button x:Name="bModel3" Content="M|M|V" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,263,0,0" Width="181" Click="bModel3_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
-        <Button x:Name="bModel4" Content="M|M|V|K" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,316,0,0" Width="181" Click="bModel4_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
-        <Button x:Name="bModel5" Content="M|M|V|K|N" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,369,0,0" Width="181" Click="bModel5_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9"/>
+        <Image x:Name="imageMain" Source="/Assets/MainPage.jpg" Canvas.ZIndex="-1" Stretch="Fill" Height="568" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock" Margin="0,83,440,0" Text="QT Calculator" VerticalAlignment="Top" Foreground="#FFFF9700" FontSize="32" FontFamily="Segoe UI Semibold" MaxLines="1" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="False" IsRightTapEnabled="False" Canvas.ZIndex="5" CharacterSpacing="10" TextTrimming="CharacterEllipsis" HorizontalAlignment="Right" Width="194" d:LayoutOverrides="LeftPosition, RightPosition"/>
+        <Button x:Name="bModel1" Content="M|M|1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,157,445,0" Click="bModel1_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9" Width="181" d:LayoutOverrides="LeftPosition, RightPosition"/>
+        <Button x:Name="bModel2" Content="M|M|∞" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,210,445,0" Width="181" Click="bModel2_Click" Foreground="Black" Background="#FFFD7313" Opacity="0.9" d:LayoutOverrides="LeftPosition, RightPosition"/>
+        <Button x:Name="bModel3" Content="M|M|V" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,263,445,0" Click="bModel3_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9" Width="181" d:LayoutOverrides="LeftPosition, RightPosition"/>
+        <Button x:Name="bModel4" Content="M|M|V|K" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,316,445,0" Click="bModel4_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9" Width="181" d:LayoutOverrides="LeftPosition, RightPosition"/>
+        <Button x:Name="bModel5" Content="M|M|V|K|N" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,369,445,0" Click="bModel5_Click" Background="#FFFD7313" Foreground="Black" Opacity="0.9" Width="181" d:LayoutOverrides="LeftPosition, RightPosition"/>
     </Grid>
 </Page>

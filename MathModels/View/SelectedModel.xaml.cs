@@ -110,7 +110,7 @@ namespace MathModels.View
                 // look up destination, set trip.
                 QueueVoiceCommand voiceCommand = (QueueVoiceCommand)e.NavigationParameter;
                 HubModels.Header = Models.Point.GetModelByNumber(voiceCommand.modelNumber);
-                SetControlsPosition(Models.Point.GetModelByNumber(voiceCommand.modelNumber));
+                SetControlsPosition(HubModels.Header.ToString());
                 SetRandomInput();
                 bResult_Click(this, new RoutedEventArgs());
 
@@ -132,7 +132,7 @@ namespace MathModels.View
                     if (args.Length == 2 && args[0].ToLowerInvariant() == "modelnumber")
                     {
                         HubModels.Header = Models.Point.GetModelByNumber(args[1]);
-                        SetControlsPosition(args[1]);
+                        SetControlsPosition(HubModels.Header.ToString());
                         SetRandomInput();
                         bResult_Click(this, new RoutedEventArgs());
 
@@ -182,15 +182,15 @@ namespace MathModels.View
             Media.MediaEnded += Media_MediaEnded;
             //InitContiniousRecognition();
 
-            HubSectionGraph.MinWidth = Window.Current.Bounds.Width - 500;
+            HubSectionGraph.MinWidth = Window.Current.Bounds.Width; // - 500
             listViewResults.Height = Window.Current.Bounds.Height - 310;
             listView.Margin = new Thickness(264, Window.Current.Bounds.Height - 184, 0, 0);
             listView.Height = Window.Current.Bounds.Height - listViewResults.Height;
             LineChart.Height = Window.Current.Bounds.Height - 119;
-            LineChart.Width = Window.Current.Bounds.Width - 531;
+            LineChart.Width = Window.Current.Bounds.Width; // - 531
             LineChart.Visibility = Visibility.Collapsed;
             inkCanvas.Height = LineChart.Height;
-            inkCanvas.Width = Window.Current.Bounds.Width - 531;
+            inkCanvas.Width = Window.Current.Bounds.Width; // - 531
             inkToolbar.Margin = new Thickness(Window.Current.Bounds.Width - 156, 61, 0, 0);
             inkCanvas.Visibility = Visibility.Collapsed;
             inkToolbar.Visibility = Visibility.Collapsed;
@@ -707,6 +707,21 @@ namespace MathModels.View
             sayText.Visibility = Visibility.Collapsed;
             bListen.IsEnabled = false;
             ProgressRing.IsActive = true;
+            sourcePackets = 0;
+            sourceScheme = 0;
+            onServiceMu = 0;
+            inProcessServices = 0;
+            inProcessMax = 0;
+            lostPackets = 0;
+            packetsCount = 0;
+            proceeded = 0;
+            queue = 0;
+            lastActive = 0;
+            everyServicesMu = null;
+            sumServicesMu = 0;
+            currentQueue = 0;
+            first = true;
+            isQueueEmpty = false;
             await Task.Delay(100);
             await Task.Yield();
             listViewResults.Items.Clear();
